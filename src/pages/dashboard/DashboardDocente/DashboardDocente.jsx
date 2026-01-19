@@ -6,6 +6,8 @@ export default function DashboardGestorLocal() {
   const [abaSelecionada, setAbaSelecionada] = useState('overview')
   const [filtroVagas, setFiltroVagas] = useState('todas')
   const [filtroAlunos, setFiltroAlunos] = useState('todos')
+  const [abaFrequencia, setAbaFrequencia] = useState('checkin')
+  const [abaValidacao, setAbaValidacao] = useState('pendente')
 
   // Dados mock do gestor do local
   const local = {
@@ -60,6 +62,17 @@ export default function DashboardGestorLocal() {
     { id: 6, nome: 'Lucas Martins', matricula: '202401239', periodo: 10, especialidade: 'Cardiologia', preceptor: 'Dr. João Cardoso', desempenho: 8.0, frequencia: 90.0, status: 'Ativo' },
     { id: 7, nome: 'Fernanda Rocha', matricula: '202401240', periodo: 11, especialidade: 'Ortopedia', preceptor: 'Dr. Fernando Costa', desempenho: 7.8, frequencia: 87.5, status: 'Ativo' },
     { id: 8, nome: 'Patricia Gomes', matricula: '202401241', periodo: 11, especialidade: 'Oftalmologia', preceptor: 'Dra. Beatriz Santos', desempenho: 8.5, frequencia: 93.0, status: 'Ativo' }
+  ]
+
+  // Mock de REGISTRO_FREQUENCIA (check-in / check-out)
+  const registrosFrequencia = [
+    { id: 1, id_aluno: 1, nome_aluno: 'João Silva Santos', matricula: '202401234', data: '2025-05-15', hora_checkin: '08:00', hora_checkout: null, status_validacao: 'Pendente', preceptor: 'Dra. Maria Silva', local: 'Enfermaria A' },
+    { id: 2, id_aluno: 2, nome_aluno: 'Maria Oliveira Costa', matricula: '202401235', data: '2025-05-15', hora_checkin: '07:55', hora_checkout: '17:10', status_validacao: 'Validado', preceptor: 'Dra. Maria Silva', local: 'UTI' },
+    { id: 3, id_aluno: 3, nome_aluno: 'Carlos Ferreira Lima', matricula: '202401236', data: '2025-05-15', hora_checkin: '08:05', hora_checkout: null, status_validacao: 'Pendente', preceptor: 'Dr. Carlos Mendes', local: 'Pronto Socorro' },
+    { id: 4, id_aluno: 4, nome_aluno: 'Ana Paula Silva', matricula: '202401237', data: '2025-05-15', hora_checkin: '08:00', hora_checkout: '16:55', status_validacao: 'Pendente', preceptor: 'Dra. Ana Costa', local: 'Pediatria' },
+    { id: 5, id_aluno: 5, nome_aluno: 'Roberto Mendes', matricula: '202401238', data: '2025-05-15', hora_checkin: '07:58', hora_checkout: '17:05', status_validacao: 'Validado', preceptor: 'Dra. Paula Santos', local: 'Ginecologia' },
+    { id: 6, id_aluno: 1, nome_aluno: 'João Silva Santos', matricula: '202401234', data: '2025-05-14', hora_checkin: '08:02', hora_checkout: '17:00', status_validacao: 'Validado', preceptor: 'Dra. Maria Silva', local: 'Enfermaria A' },
+    { id: 7, id_aluno: 2, nome_aluno: 'Maria Oliveira Costa', matricula: '202401235', data: '2025-05-14', hora_checkin: '08:00', hora_checkout: '17:05', status_validacao: 'Validado', preceptor: 'Dra. Maria Silva', local: 'UTI' }
   ]
 
   // Filtrar vagas
@@ -141,6 +154,26 @@ export default function DashboardGestorLocal() {
               }`}
             >
               <FiUsers size={18} /> Alunos
+            </button>
+            <button
+              onClick={() => setAbaSelecionada('frequencia')}
+              className={`py-4 px-2 font-semibold text-sm lg:text-base transition-all duration-300 border-b-2 whitespace-nowrap flex items-center gap-2 ${
+                abaSelecionada === 'frequencia'
+                  ? 'border-[#237EE6] text-[#237EE6]'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <FiCheckCircle size={18} /> Frequência
+            </button>
+            <button
+              onClick={() => setAbaSelecionada('validacao')}
+              className={`py-4 px-2 font-semibold text-sm lg:text-base transition-all duration-300 border-b-2 whitespace-nowrap flex items-center gap-2 ${
+                abaSelecionada === 'validacao'
+                  ? 'border-[#237EE6] text-[#237EE6]'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <FiBarChart2 size={18} /> Validação
             </button>
           </div>
         </div>
@@ -526,7 +559,251 @@ export default function DashboardGestorLocal() {
             </div>
           </div>
         )}
-      </div>
-    </div>
+
+        {/* FREQUÊNCIA - CHECK-IN */}
+        {abaSelecionada === 'frequencia' && (
+          <div className='space-y-6'>
+            <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'><FiCheckCircle size={32} /> Registro de Frequência (Check-in / Check-out)</h2>
+            
+            {/* Cards de Resumo */}
+            <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
+              <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
+                <div className='flex items-center justify-between mb-4'>
+                  <h3 className='text-lg font-semibold text-gray-900'>Registros Hoje</h3>
+                  <FiCheckCircle size={32} className='text-[#237EE6]' />
+                </div>
+                <p className='text-4xl font-bold text-[#237EE6] mb-2'>{registrosFrequencia.filter(r => r.data === '2025-05-15').length}</p>
+                <p className='text-sm text-gray-600'>Registros ativos</p>
+              </div>
+
+              <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
+                <div className='flex items-center justify-between mb-4'>
+                  <h3 className='text-lg font-semibold text-gray-900'>Check-ins Pendentes</h3>
+                  <FiAlertCircle size={32} className='text-orange-500' />
+                </div>
+                <p className='text-4xl font-bold text-orange-500 mb-2'>{registrosFrequencia.filter(r => r.hora_checkout === null).length}</p>
+                <p className='text-sm text-gray-600'>Sem check-out</p>
+              </div>
+
+              <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
+                <div className='flex items-center justify-between mb-4'>
+                  <h3 className='text-lg font-semibold text-gray-900'>Check-outs Realizados</h3>
+                  <FiCheckCircle size={32} className='text-[#10E686]' />
+                </div>
+                <p className='text-4xl font-bold text-[#10E686] mb-2'>{registrosFrequencia.filter(r => r.hora_checkout !== null).length}</p>
+                <p className='text-sm text-gray-600'>Completos hoje</p>
+              </div>
+
+              <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
+                <div className='flex items-center justify-between mb-4'>
+                  <h3 className='text-lg font-semibold text-gray-900'>Validações Pendentes</h3>
+                  <FiBarChart2 size={32} className='text-[#60C9E6]' />
+                </div>
+                <p className='text-4xl font-bold text-[#60C9E6] mb-2'>{registrosFrequencia.filter(r => r.status_validacao === 'Pendente').length}</p>
+                <p className='text-sm text-gray-600'>Aguardando validação</p>
+              </div>
+            </div>
+
+            {/* Tabela de Registros de Hoje */}
+            <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
+              <div className='p-6 border-b border-gray-200'>
+                <h3 className='text-2xl font-bold text-gray-900 flex items-center gap-2'><FiUsers size={28} /> Registros de Hoje</h3>
+              </div>
+              <div className='overflow-x-auto'>
+                <table className='w-full'>
+                  <thead>
+                    <tr className='border-b-2 border-gray-200 bg-gray-50'>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Aluno</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Matrícula</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Data</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Check-in</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Check-out</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Local</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Preceptor</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Status</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {registrosFrequencia.filter(r => r.data === '2025-05-15').map((reg) => (
+                      <tr key={reg.id} className='border-b border-gray-200 hover:bg-[#F5F7FA] transition-colors duration-300'>
+                        <td className='px-6 py-4 text-sm text-gray-900 font-medium'>{reg.nome_aluno}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.matricula}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.data}</td>
+                        <td className='px-6 py-4 text-sm font-semibold text-[#10E686]'>{reg.hora_checkin}</td>
+                        <td className='px-6 py-4 text-sm font-semibold'>
+                          {reg.hora_checkout ? (
+                            <span className='text-[#10E686]'>{reg.hora_checkout}</span>
+                          ) : (
+                            <span className='text-orange-500'>Pendente</span>
+                          )}
+                        </td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.local}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.preceptor}</td>
+                        <td className='px-6 py-4'>
+                          <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+                            reg.hora_checkout !== null
+                              ? 'bg-[#10E686]/20 text-[#10E686]'
+                              : 'bg-orange-100 text-orange-700'
+                          }`}>
+                            {reg.hora_checkout ? 'Completo' : 'Em andamento'}
+                          </span>
+                        </td>
+                        <td className='px-6 py-4'>
+                          <button className='text-[#237EE6] hover:text-[#154c8b] font-semibold text-sm transition-colors duration-300 flex items-center gap-1'>
+                            <FiEye size={16} /> Ver
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* VALIDAÇÃO DE FREQUÊNCIA */}
+        {abaSelecionada === 'validacao' && (
+          <div className='space-y-6'>
+            <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'><FiBarChart2 size={32} /> Validação de Frequência</h2>
+            
+            {/* Cards de Resumo */}
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+              <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
+                <div className='flex items-center justify-between mb-4'>
+                  <h3 className='text-lg font-semibold text-gray-900'>Pendentes de Validação</h3>
+                  <FiAlertCircle size={32} className='text-orange-500' />
+                </div>
+                <p className='text-4xl font-bold text-orange-500 mb-2'>{registrosFrequencia.filter(r => r.status_validacao === 'Pendente').length}</p>
+                <p className='text-sm text-gray-600'>Aguardando aprovação</p>
+              </div>
+
+              <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
+                <div className='flex items-center justify-between mb-4'>
+                  <h3 className='text-lg font-semibold text-gray-900'>Validados</h3>
+                  <FiCheckCircle size={32} className='text-[#10E686]' />
+                </div>
+                <p className='text-4xl font-bold text-[#10E686] mb-2'>{registrosFrequencia.filter(r => r.status_validacao === 'Validado').length}</p>
+                <p className='text-sm text-gray-600'>Aprovados</p>
+              </div>
+
+              <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
+                <div className='flex items-center justify-between mb-4'>
+                  <h3 className='text-lg font-semibold text-gray-900'>Total de Registros</h3>
+                  <FiBarChart2 size={32} className='text-[#237EE6]' />
+                </div>
+                <p className='text-4xl font-bold text-[#237EE6] mb-2'>{registrosFrequencia.length}</p>
+                <p className='text-sm text-gray-600'>Registros totais</p>
+              </div>
+            </div>
+
+            {/* Tabela de Registros Pendentes de Validação */}
+            <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
+              <div className='p-6 border-b border-gray-200 flex items-center justify-between'>
+                <h3 className='text-2xl font-bold text-gray-900 flex items-center gap-2'><FiAlertCircle size={28} /> Registros Pendentes de Validação</h3>
+                <button className='bg-[#237EE6] hover:bg-[#154c8b] text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2'>
+                  <FiCheckCircle size={18} /> Validar Selecionados
+                </button>
+              </div>
+              <div className='overflow-x-auto'>
+                <table className='w-full'>
+                  <thead>
+                    <tr className='border-b-2 border-gray-200 bg-gray-50'>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
+                        <input type='checkbox' className='w-4 h-4 cursor-pointer' />
+                      </th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Aluno</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Matrícula</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Data</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Check-in</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Check-out</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Local</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Preceptor</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Status</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {registrosFrequencia.filter(r => r.status_validacao === 'Pendente' && r.hora_checkout !== null).map((reg) => (
+                      <tr key={reg.id} className='border-b border-gray-200 hover:bg-[#F5F7FA] transition-colors duration-300'>
+                        <td className='px-6 py-4'>
+                          <input type='checkbox' className='w-4 h-4 cursor-pointer' />
+                        </td>
+                        <td className='px-6 py-4 text-sm text-gray-900 font-medium'>{reg.nome_aluno}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.matricula}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.data}</td>
+                        <td className='px-6 py-4 text-sm font-semibold text-[#237EE6]'>{reg.hora_checkin}</td>
+                        <td className='px-6 py-4 text-sm font-semibold text-[#10E686]'>{reg.hora_checkout}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.local}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.preceptor}</td>
+                        <td className='px-6 py-4'>
+                          <span className='px-3 py-1 rounded-lg text-xs font-semibold bg-orange-100 text-orange-700'>
+                            {reg.status_validacao}
+                          </span>
+                        </td>
+                        <td className='px-6 py-4 flex gap-2'>
+                          <button className='text-[#10E686] hover:text-[#0a9160] font-semibold text-sm transition-colors duration-300 flex items-center gap-1'>
+                            <FiCheckCircle size={16} /> Validar
+                          </button>
+                          <button className='text-red-600 hover:text-red-800 font-semibold text-sm transition-colors duration-300'>
+                            Rejeitar
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Tabela de Registros Validados */}
+            <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
+              <div className='p-6 border-b border-gray-200'>
+                <h3 className='text-2xl font-bold text-gray-900 flex items-center gap-2'><FiCheckCircle size={28} /> Registros Validados</h3>
+              </div>
+              <div className='overflow-x-auto'>
+                <table className='w-full'>
+                  <thead>
+                    <tr className='border-b-2 border-gray-200 bg-gray-50'>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Aluno</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Matrícula</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Data</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Check-in</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Check-out</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Local</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Preceptor</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Status</th>
+                      <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {registrosFrequencia.filter(r => r.status_validacao === 'Validado').map((reg) => (
+                      <tr key={reg.id} className='border-b border-gray-200 hover:bg-[#F5F7FA] transition-colors duration-300'>
+                        <td className='px-6 py-4 text-sm text-gray-900 font-medium'>{reg.nome_aluno}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.matricula}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.data}</td>
+                        <td className='px-6 py-4 text-sm font-semibold text-[#237EE6]'>{reg.hora_checkin}</td>
+                        <td className='px-6 py-4 text-sm font-semibold text-[#10E686]'>{reg.hora_checkout}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.local}</td>
+                        <td className='px-6 py-4 text-sm text-gray-700'>{reg.preceptor}</td>
+                        <td className='px-6 py-4'>
+                          <span className='px-3 py-1 rounded-lg text-xs font-semibold bg-[#10E686]/20 text-[#10E686]'>
+                            {reg.status_validacao}
+                          </span>
+                        </td>
+                        <td className='px-6 py-4'>
+                          <button className='text-[#237EE6] hover:text-[#154c8b] font-semibold text-sm transition-colors duration-300 flex items-center gap-1'>
+                            <FiEye size={16} /> Ver
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
   )
 }

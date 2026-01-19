@@ -1,9 +1,12 @@
 import { useState } from 'react'
-import { FiHome, FiUsers, FiCheckCircle, FiAlertCircle, FiClipboard, FiEdit2, FiDownload, FiPlus, FiEye, FiBarChart2, FiTrendingUp, FiFilter, FiMapPin } from 'react-icons/fi'
+import { FiHome, FiUsers, FiCheckCircle, FiAlertCircle, FiClipboard, FiEdit2, FiDownload, FiPlus, FiEye, FiBarChart2, FiTrendingUp, FiFilter, FiMapPin, FiMenu, FiX } from 'react-icons/fi'
 
 export default function DashboardPreceptor() {
   const [abaSelecionada, setAbaSelecionada] = useState('overview')
+  const [menuMobileAberto, setMenuMobileAberto] = useState(false)
   const [filtroFrequencia, setFiltroFrequencia] = useState('pendentes')
+  const [filtroData, setFiltroData] = useState('')
+  const [filtroLocal, setFiltroLocal] = useState('todos')
 
   // Dados mock do preceptor
   const preceptor = {
@@ -90,6 +93,9 @@ export default function DashboardPreceptor() {
       status: 'Ativo'
     }
   ]
+
+  // Obter locais únicos
+  const locaisUnicos = ['todos', ...new Set(alunos.map(a => a.local))]
 
   // Mock de registros de frequência para validação
   const frequenciasPendentes = [
@@ -206,9 +212,38 @@ export default function DashboardPreceptor() {
       </div>
 
       {/* Abas de Navegação */}
-      <div className='border-b border-gray-200 bg-white sticky top-0 z-10'>
+      <div className='border-b border-gray-200 bg-white sticky top-0 z-10 shadow-sm'>
         <div className='max-w-7xl mx-auto px-6 lg:px-12'>
-          <div className='flex gap-8 overflow-x-auto'>
+          {/* Mobile: Botão Hambúrguer + Aba Atual */}
+          <div className='md:hidden flex items-center justify-between py-4'>
+            <button
+              onClick={() => setMenuMobileAberto(!menuMobileAberto)}
+              className='flex items-center gap-2 text-gray-900 font-semibold'
+            >
+              {menuMobileAberto ? <FiX size={24} /> : <FiMenu size={24} />}
+              <span className='text-sm'>
+                {abaSelecionada === 'overview' && 'Visão Geral'}
+                {abaSelecionada === 'alunos' && 'Meus Alunos'}
+                {abaSelecionada === 'frequencia' && 'Validar Frequência'}
+                {abaSelecionada === 'avaliacoes' && 'Avaliações'}
+              </span>
+            </button>
+          </div>
+
+          {/* Mobile: Menu Dropdown */}
+          {menuMobileAberto && (
+            <div className='md:hidden absolute left-0 right-0 bg-white border-t border-gray-200 shadow-lg'>
+              <div className='py-2'>
+                <button onClick={() => { setAbaSelecionada('overview'); setMenuMobileAberto(false) }} className={`w-full text-left px-6 py-3 font-semibold text-sm transition-all duration-300 flex items-center gap-3 ${abaSelecionada === 'overview' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-600 hover:bg-gray-50'}`}><FiHome size={18} /> Visão Geral</button>
+                <button onClick={() => { setAbaSelecionada('alunos'); setMenuMobileAberto(false) }} className={`w-full text-left px-6 py-3 font-semibold text-sm transition-all duration-300 flex items-center gap-3 ${abaSelecionada === 'alunos' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-600 hover:bg-gray-50'}`}><FiUsers size={18} /> Meus Alunos</button>
+                <button onClick={() => { setAbaSelecionada('frequencia'); setMenuMobileAberto(false) }} className={`w-full text-left px-6 py-3 font-semibold text-sm transition-all duration-300 flex items-center gap-3 ${abaSelecionada === 'frequencia' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-600 hover:bg-gray-50'}`}><FiCheckCircle size={18} /> Validar Frequência</button>
+                <button onClick={() => { setAbaSelecionada('avaliacoes'); setMenuMobileAberto(false) }} className={`w-full text-left px-6 py-3 font-semibold text-sm transition-all duration-300 flex items-center gap-3 ${abaSelecionada === 'avaliacoes' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-600 hover:bg-gray-50'}`}><FiTrendingUp size={18} /> Avaliações</button>
+              </div>
+            </div>
+          )}
+
+          {/* Desktop: Abas Horizontais */}
+          <div className='hidden md:flex gap-8 overflow-x-auto'>
             <button
               onClick={() => setAbaSelecionada('overview')}
               className={`py-4 px-2 font-semibold text-sm lg:text-base transition-all duration-300 border-b-2 whitespace-nowrap ${
@@ -459,22 +494,76 @@ export default function DashboardPreceptor() {
         {/* VALIDAR FREQUÊNCIA */}
         {abaSelecionada === 'frequencia' && (
           <div className='space-y-6'>
-            <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-              <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'><FiCheckCircle size={32} /> Validar Frequência</h2>
-              <select
-                value={filtroFrequencia}
-                onChange={(e) => setFiltroFrequencia(e.target.value)}
-                className='px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#237EE6] focus:outline-none'
-              >
-                <option value='pendentes'>Pendentes ({frequenciasPendentes.length})</option>
-                <option value='validadas'>Validadas</option>
-                <option value='todas'>Todas</option>
-              </select>
+            <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'><FiCheckCircle size={32} /> Validar Frequência</h2>
+            
+            {/* Filtros */}
+            <div className='bg-white rounded-2xl shadow-md p-6'>
+              <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+                <div>
+                  <label className='block text-sm font-semibold text-gray-700 mb-2'>Status</label>
+                  <select
+                    value={filtroFrequencia}
+                    onChange={(e) => setFiltroFrequencia(e.target.value)}
+                    className='w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#237EE6] focus:outline-none'
+                  >
+                    <option value='pendentes'>Pendentes ({frequenciasPendentes.length})</option>
+                    <option value='validadas'>Validadas</option>
+                    <option value='todas'>Todas</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className='block text-sm font-semibold text-gray-700 mb-2'>Data</label>
+                  <input
+                    type='date'
+                    value={filtroData}
+                    onChange={(e) => setFiltroData(e.target.value)}
+                    className='w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#237EE6] focus:outline-none'
+                  />
+                </div>
+                
+                <div>
+                  <label className='block text-sm font-semibold text-gray-700 mb-2'>Local</label>
+                  <select
+                    value={filtroLocal}
+                    onChange={(e) => setFiltroLocal(e.target.value)}
+                    className='w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#237EE6] focus:outline-none'
+                  >
+                    {locaisUnicos.map((local) => (
+                      <option key={local} value={local}>
+                        {local === 'todos' ? 'Todos os Locais' : local}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              
+              {(filtroData || filtroLocal !== 'todos') && (
+                <div className='mt-4 flex items-center gap-2'>
+                  <button
+                    onClick={() => {
+                      setFiltroData('')
+                      setFiltroLocal('todos')
+                    }}
+                    className='text-sm text-[#237EE6] hover:text-[#154c8b] font-semibold flex items-center gap-1'
+                  >
+                    <FiFilter size={14} /> Limpar filtros
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Lista de Frequências */}
             <div className='space-y-4'>
-              {frequenciasPendentes.map((freq) => (
+              {frequenciasPendentes
+                .filter(freq => {
+                  // Filtro por data
+                  if (filtroData && freq.data !== filtroData) return false
+                  // Filtro por local
+                  if (filtroLocal !== 'todos' && freq.local !== filtroLocal) return false
+                  return true
+                })
+                .map((freq) => (
                 <div key={freq.id} className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
                   <div className='flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6'>
                     <div className='flex-1'>
@@ -535,6 +624,20 @@ export default function DashboardPreceptor() {
                   </div>
                 </div>
               ))}
+              
+              {frequenciasPendentes
+                .filter(freq => {
+                  if (filtroData && freq.data !== filtroData) return false
+                  if (filtroLocal !== 'todos' && freq.local !== filtroLocal) return false
+                  return true
+                })
+                .length === 0 && (
+                <div className='bg-white rounded-2xl shadow-md p-12 text-center'>
+                  <FiCheckCircle size={48} className='mx-auto text-gray-300 mb-4' />
+                  <p className='text-gray-600 text-lg font-semibold mb-2'>Nenhuma frequência encontrada</p>
+                  <p className='text-gray-500 text-sm'>Ajuste os filtros para ver mais resultados</p>
+                </div>
+              )}
             </div>
           </div>
         )}
