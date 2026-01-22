@@ -78,17 +78,21 @@ export default function VicaoGeralAdm({ admin, instituicoes, frequenciaLocal }) 
         <div className='bg-white rounded-2xl shadow-md p-6'>
           <h2 className='text-xl font-bold text-gray-900 mb-4 flex items-center gap-2'><FiTrendingUp size={24} /> Frequência por Local</h2>
           <div className='space-y-3'>
-            {frequenciaLocal.slice(0, 3).map((freq) => (
-              <div key={freq.id} className='p-3 bg-[#F5F7FA] rounded-lg'>
-                <div className='flex items-center justify-between mb-1'>
-                  <p className='font-semibold text-gray-900 text-sm'>{freq.local}</p>
-                  <p className='font-bold text-[#237EE6]'>{freq.frequencia_media}%</p>
+            {frequenciaLocal && frequenciaLocal.length > 0 ? (
+              frequenciaLocal.slice(0, 3).map((freq, idx) => (
+                <div key={freq.local || `freq-${idx}`} className='p-3 bg-[#F5F7FA] rounded-lg'>
+                  <div className='flex items-center justify-between mb-1'>
+                    <p className='font-semibold text-gray-900 text-sm'>{freq.local}</p>
+                    <p className='font-bold text-[#237EE6]'>{freq.frequencia_media}%</p>
+                  </div>
+                  <div className='w-full bg-gray-200 rounded-full h-2'>
+                    <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${freq.frequencia_media}%` }}></div>
+                  </div>
                 </div>
-                <div className='w-full bg-gray-200 rounded-full h-2'>
-                  <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${freq.frequencia_media}%` }}></div>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className='text-gray-600 text-sm text-center py-4'>Sem dados de frequência</p>
+            )}
           </div>
         </div>
       </div>

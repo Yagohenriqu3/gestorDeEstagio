@@ -3,19 +3,6 @@ import { FiHome, FiUsers, FiTarget, FiMapPin, FiClipboard, FiEdit2, FiDownload, 
 import { MdLocalHospital } from 'react-icons/md'
 
 export default function DashboardGestorLocal() {
-  const [abaSelecionada, setAbaSelecionada] = useState('overview')
-  const [filtroVagas, setFiltroVagas] = useState('todas')
-  const [filtroAlunos, setFiltroAlunos] = useState('todos')
-  const [instituicaoSelecionada, setInstituicaoSelecionada] = useState(null)
-  const [modalInstituicao, setModalInstituicao] = useState(true)
-  const [menuMobileAberto, setMenuMobileAberto] = useState(false)
-
-  // Mock de instituições atendidas pelo local
-  const instituicoesAtendidas = [
-    { id: 1, nome: 'UNIFESP', sigla: 'UNIFESP', alunos: 18, logo: '🏛️' },
-    { id: 2, nome: 'USP - Faculdade de Medicina', sigla: 'USP-FM', alunos: 10, logo: '🎓' }
-  ]
-
   // Dados mock do gestor do local
   const local = {
     nome: 'Hospital Universitário São Paulo',
@@ -34,6 +21,25 @@ export default function DashboardGestorLocal() {
     convenio: 'Vigente',
     status: 'Ativo'
   }
+
+  // Estado inicial depende de local: declare depois do mock para evitar ReferenceError
+  const [abaSelecionada, setAbaSelecionada] = useState('overview')
+  const [filtroVagas, setFiltroVagas] = useState('todas')
+  const [filtroAlunos, setFiltroAlunos] = useState('todos')
+  const [instituicaoSelecionada, setInstituicaoSelecionada] = useState(null)
+  const [modalInstituicao, setModalInstituicao] = useState(true)
+  const [menuMobileAberto, setMenuMobileAberto] = useState(false)
+  const [modalEditarLocal, setModalEditarLocal] = useState(false)
+  const [modalAssociarPreceptor, setModalAssociarPreceptor] = useState(false)
+  const [preceptorSelecionado, setPreceptorSelecionado] = useState(null)
+  const [especialidadeSelecionada, setEspecialidadeSelecionada] = useState(null)
+  const [localEditando, setLocalEditando] = useState({ ...local })
+
+  // Mock de instituições atendidas pelo local
+  const instituicoesAtendidas = [
+    { id: 1, nome: 'UNIFESP', sigla: 'UNIFESP', alunos: 18, logo: '🏛️' },
+    { id: 2, nome: 'USP - Faculdade de Medicina', sigla: 'USP-FM', alunos: 10, logo: '🎓' }
+  ]
 
   // Mock de vagas
   const vagas = [
@@ -157,6 +163,33 @@ export default function DashboardGestorLocal() {
     return !instituicaoSelecionada || d.instituicao === instituicaoSelecionada
   })
 
+  // Mock de frequência por local
+  const frequenciaLocal = [
+    { local: 'Enfermaria Ala A', frequencia_media: 94.3, alunos: 5, preceptor: 'Dra. Maria Silva' },
+    { local: 'Centro Cirúrgico', frequencia_media: 91.2, alunos: 4, preceptor: 'Dr. Carlos Oliveira' },
+    { local: 'Ambulatório Pediátrico', frequencia_media: 88.8, alunos: 3, preceptor: 'Dra. Ana Costa' },
+    { local: 'Ambulatório Ginecológico', frequencia_media: 96.5, alunos: 5, preceptor: 'Dra. Paula Santos' },
+    { local: 'UTI Cardiológica', frequencia_media: 90.1, alunos: 2, preceptor: 'Dr. João Cardoso' },
+    { local: 'Ambulatório Neurológico', frequencia_media: 93.0, alunos: 3, preceptor: 'Dr. Rafael Lima' },
+    { local: 'Pronto-Socorro Ortopédico', frequencia_media: 85.5, alunos: 2, preceptor: 'Dr. Fernando Costa' },
+    { local: 'Ambulatório de Oftalmologia', frequencia_media: 91.0, alunos: 1, preceptor: 'Dra. Beatriz Santos' }
+  ]
+
+  // Mock de Componentes Curriculares (Especialidades)
+  const componentesCurriculares = [
+    { id: 1, nome: 'Clínica Médica I', codigo: 'CM001', periodo: '9º' },
+    { id: 2, nome: 'Cirurgia Geral', codigo: 'CG001', periodo: '9º' },
+    { id: 3, nome: 'Pediatria', codigo: 'PED001', periodo: '10º' },
+    { id: 4, nome: 'Ginecologia', codigo: 'GIN001', periodo: '9º' },
+    { id: 5, nome: 'Cardiologia', codigo: 'CAR001', periodo: '10º' },
+    { id: 6, nome: 'Neurologia', codigo: 'NEU001', periodo: '11º' },
+    { id: 7, nome: 'Ortopedia', codigo: 'ORT001', periodo: '11º' },
+    { id: 8, nome: 'Oftalmologia', codigo: 'OFT001', periodo: '11º' }
+  ]
+
+  // Preceptores ativos (para modal de associação)
+  const preceptoresAtivos = preceptores.filter(p => p.status === 'Ativo' && (!instituicaoSelecionada || p.instituicao === instituicaoSelecionada))
+
   return (
     <div className='w-full min-h-screen bg-linear-to-br from-[#F5F7FA] to-white'>
       {/* Modal de Seleção de Instituição */}
@@ -220,7 +253,9 @@ export default function DashboardGestorLocal() {
               >
                 🏛️ Trocar Instituição
               </button>
-              <button className='bg-white/20 backdrop-blur hover:bg-white/30 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300'>
+              <button 
+                onClick={() => setModalEditarLocal(true)}
+                className='bg-white/20 backdrop-blur hover:bg-white/30 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300'>
                 ✏️ Editar Local
               </button>
               <button className='bg-white/20 backdrop-blur hover:bg-white/30 text-white px-4 py-2 rounded-lg font-semibold transition-all duration-300'>
@@ -325,6 +360,20 @@ export default function DashboardGestorLocal() {
                   <FiCalendar size={18} />
                   <span>Disponibilidade</span>
                 </button>
+                <button
+                  onClick={() => {
+                    setAbaSelecionada('locaisFrequencia')
+                    setMenuMobileAberto(false)
+                  }}
+                  className={`w-full text-left px-6 py-3 font-semibold text-sm transition-all duration-300 flex items-center gap-3 ${
+                    abaSelecionada === 'locaisFrequencia'
+                      ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]'
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <FiBarChart2 size={18} />
+                  <span>Locais e Frequência</span>
+                </button>
               </div>
             </div>
           )}
@@ -385,6 +434,17 @@ export default function DashboardGestorLocal() {
             >
               <FiCalendar size={18} />
               <span>Disponibilidade</span>
+            </button>
+            <button
+              onClick={() => setAbaSelecionada('locaisFrequencia')}
+              className={`py-4 px-2 font-semibold text-sm lg:text-base transition-all duration-300 border-b-2 whitespace-nowrap flex items-center gap-2 ${
+                abaSelecionada === 'locaisFrequencia'
+                  ? 'border-[#237EE6] text-[#237EE6]'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <FiBarChart2 size={18} />
+              <span>Locais e Frequência</span>
             </button>
           </div>
         </div>
@@ -875,7 +935,261 @@ export default function DashboardGestorLocal() {
             </div>
           </div>
         )}
+
+        {/* LOCAIS E FREQUÊNCIA */}
+        {abaSelecionada === 'locaisFrequencia' && (
+          <div className='space-y-6'>
+            <div className='flex justify-between items-center'>
+              <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'>📊 Frequência por Local</h2>
+              <button
+                onClick={() => setModalEditarLocal(true)}
+                className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'
+              >
+                <FiEdit2 size={18} /> Editar Local
+              </button>
+            </div>
+
+            {/* Grid de Frequência por Local */}
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+              {frequenciaLocal.map((freq, idx) => (
+                <div key={freq.local || `freq-${idx}`} className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all'>
+                  <div className='flex items-start justify-between mb-4'>
+                    <div>
+                      <h3 className='text-lg font-bold text-gray-900'>{freq.local}</h3>
+                      <p className='text-sm text-gray-600 flex items-center gap-1 mt-1'>
+                        <FiUser size={14} /> {freq.preceptor}
+                      </p>
+                    </div>
+                    <div className='flex gap-2'>
+                      <button
+                        onClick={() => {
+                          setLocalEditando(freq)
+                          setModalEditarLocal(true)
+                        }}
+                        className='p-2 hover:bg-blue-100 text-blue-600 rounded-lg transition-all'
+                        title='Editar local'
+                      >
+                        <FiEdit2 size={18} />
+                      </button>
+                      <button
+                        onClick={() => setModalAssociarPreceptor(true)}
+                        className='p-2 hover:bg-green-100 text-green-600 rounded-lg transition-all'
+                        title='Associar preceptor'
+                      >
+                        <FiPlus size={18} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Frequência com Barra de Progresso */}
+                  <div className='mb-4'>
+                    <div className='flex justify-between items-center mb-2'>
+                      <span className='text-sm font-semibold text-gray-700'>Frequência Média</span>
+                      <span className='text-2xl font-bold text-[#237EE6]'>{freq.frequencia_media}%</span>
+                    </div>
+                    <div className='w-full bg-gray-200 rounded-full h-3'>
+                      <div
+                        className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-3 rounded-full transition-all'
+                        style={{ width: `${freq.frequencia_media}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* Informações Adicionais */}
+                  <div className='grid grid-cols-2 gap-4 pt-4 border-t border-gray-200'>
+                    <div>
+                      <p className='text-xs text-gray-600 font-semibold'>Alunos</p>
+                      <p className='text-2xl font-bold text-gray-900 mt-1'>{freq.alunos}</p>
+                    </div>
+                    <div>
+                      <p className='text-xs text-gray-600 font-semibold'>Status</p>
+                      <p className={`text-lg font-bold mt-1 ${
+                        freq.frequencia_media >= 75 ? 'text-[#10E686]' : freq.frequencia_media >= 60 ? 'text-yellow-500' : 'text-red-500'
+                      }`}>
+                        {freq.frequencia_media >= 75 ? '✓ Bom' : freq.frequencia_media >= 60 ? '⚠ Atenção' : '✕ Crítico'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* MODAL: EDITAR LOCAL */}
+      {modalEditarLocal && (
+        <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
+          <div className='bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-6'>
+            <div className='flex justify-between items-center'>
+              <h2 className='text-2xl font-bold text-gray-900'>✏️ Editar Local</h2>
+              <button
+                onClick={() => {
+                  setModalEditarLocal(false)
+                  setLocalEditando({ ...local })
+                }}
+                className='text-gray-500 hover:text-gray-700 transition-all'
+              >
+                <FiX size={24} />
+              </button>
+            </div>
+
+            <div className='space-y-4'>
+              <div>
+                <label className='block text-sm font-semibold text-gray-700 mb-2'>Nome do Local</label>
+                <input
+                  type='text'
+                  value={localEditando.nome || ''}
+                  onChange={(e) => setLocalEditando({ ...localEditando, nome: e.target.value })}
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none'
+                  placeholder='Ex: Enfermaria Ala A'
+                />
+              </div>
+
+              <div>
+                <label className='block text-sm font-semibold text-gray-700 mb-2'>Endereço</label>
+                <input
+                  type='text'
+                  value={localEditando.endereco || ''}
+                  onChange={(e) => setLocalEditando({ ...localEditando, endereco: e.target.value })}
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none'
+                  placeholder='Rua, número, complemento'
+                />
+              </div>
+
+              <div>
+                <label className='block text-sm font-semibold text-gray-700 mb-2'>Telefone</label>
+                <input
+                  type='tel'
+                  value={localEditando.telefone || ''}
+                  onChange={(e) => setLocalEditando({ ...localEditando, telefone: e.target.value })}
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none'
+                  placeholder='(XX) XXXXX-XXXX'
+                />
+              </div>
+
+              <div>
+                <label className='block text-sm font-semibold text-gray-700 mb-2'>Responsável</label>
+                <input
+                  type='text'
+                  value={localEditando.responsavel || ''}
+                  onChange={(e) => setLocalEditando({ ...localEditando, responsavel: e.target.value })}
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none'
+                  placeholder='Nome do responsável'
+                />
+              </div>
+            </div>
+
+            <div className='flex gap-3 pt-4 border-t border-gray-200'>
+              <button
+                onClick={() => {
+                  setModalEditarLocal(false)
+                  setLocalEditando({ ...local })
+                }}
+                className='flex-1 px-4 py-2 bg-gray-200 text-gray-900 font-semibold rounded-lg hover:bg-gray-300 transition-all'
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  setModalEditarLocal(false)
+                  alert('Local atualizado com sucesso!')
+                }}
+                className='flex-1 px-4 py-2 bg-[#237EE6] text-white font-semibold rounded-lg hover:shadow-lg transition-all'
+              >
+                Salvar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: ASSOCIAR PRECEPTOR À ESPECIALIDADE */}
+      {modalAssociarPreceptor && (
+        <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
+          <div className='bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-6'>
+            <div className='flex justify-between items-center'>
+              <h2 className='text-2xl font-bold text-gray-900'>👥 Associar Preceptor</h2>
+              <button
+                onClick={() => setModalAssociarPreceptor(false)}
+                className='text-gray-500 hover:text-gray-700 transition-all'
+              >
+                <FiX size={24} />
+              </button>
+            </div>
+
+            <div className='space-y-4'>
+              <div>
+                <label className='block text-sm font-semibold text-gray-700 mb-2'>Selecione o Preceptor</label>
+                <select
+                  value={preceptorSelecionado?.id || ''}
+                  onChange={(e) => {
+                    const preceptor = preceptoresAtivos.find((p) => p.id === e.target.value)
+                    setPreceptorSelecionado(preceptor)
+                  }}
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none'
+                >
+                  <option value=''>-- Selecionar Preceptor --</option>
+                  {preceptoresAtivos.map((preceptor) => (
+                    <option key={preceptor.id} value={preceptor.id}>
+                      {preceptor.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className='block text-sm font-semibold text-gray-700 mb-2'>Selecione a Especialidade</label>
+                <select
+                  value={especialidadeSelecionada?.id || ''}
+                  onChange={(e) => {
+                    const especialidade = componentesCurriculares.find((c) => c.id === e.target.value)
+                    setEspecialidadeSelecionada(especialidade)
+                  }}
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none'
+                >
+                  <option value=''>-- Selecionar Especialidade --</option>
+                  {componentesCurriculares.map((comp) => (
+                    <option key={comp.id} value={comp.id}>
+                      {comp.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className='block text-sm font-semibold text-gray-700 mb-2'>Capacidade de Alunos</label>
+                <input
+                  type='number'
+                  min='1'
+                  max='50'
+                  defaultValue='5'
+                  className='w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none'
+                  placeholder='Quantidade de alunos'
+                />
+              </div>
+            </div>
+
+            <div className='flex gap-3 pt-4 border-t border-gray-200'>
+              <button
+                onClick={() => setModalAssociarPreceptor(false)}
+                className='flex-1 px-4 py-2 bg-gray-200 text-gray-900 font-semibold rounded-lg hover:bg-gray-300 transition-all'
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  setModalAssociarPreceptor(false)
+                  alert('Preceptor associado com sucesso!')
+                }}
+                className='flex-1 px-4 py-2 bg-[#10E686] text-gray-900 font-semibold rounded-lg hover:shadow-lg transition-all'
+              >
+                Associar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
