@@ -4,6 +4,7 @@ import { useState } from 'react'
 export default function Header() {
   const location = useLocation()
   const [menuAberto, setMenuAberto] = useState(false)
+  const [headerRetraido, setHeaderRetraido] = useState(false)
 
   const links = [
     { path: '/', label: '🔐 Login', icon: '🔐' },
@@ -17,7 +18,12 @@ export default function Header() {
   const isActive = (path) => location.pathname === path
 
   return (
-    <header className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] shadow-lg sticky top-0 z-50'>
+    <>
+    <header className={`bg-linear-to-r from-[#237EE6] to-[#60C9E6] shadow-lg ${
+      headerRetraido ? 'fixed' : 'sticky'
+    } top-0 z-50 transition-all duration-300 w-full ${
+      headerRetraido ? 'transform -translate-y-full' : ''
+    }`}>
       <div className='max-w-7xl mx-auto px-6 lg:px-12'>
         <div className='flex items-center justify-between h-16'>
           {/* Logo / Nome do Sistema */}
@@ -103,11 +109,59 @@ export default function Header() {
       </div>
 
       {/* Badge de Desenvolvimento */}
-      <div className='bg-yellow-500 text-yellow-900 text-center py-1 px-4'>
+      <div className='bg-yellow-500 text-yellow-900 text-center py-1 px-4 relative'>
+        {/* Botão Retrair Header - Quando não retraído */}
+        {!headerRetraido && (
+          <button
+            onClick={() => setHeaderRetraido(true)}
+            className='flex absolute -top-3 left-1/2 transform -translate-x-1/2 bg-white hover:bg-gray-100 text-[#237EE6] px-3 py-1.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 items-center justify-center gap-2 z-10'
+            title='Retrair header'
+          >
+            <svg
+              className='w-4 h-4'
+              fill='none'
+              stroke='currentColor'
+              viewBox='0 0 24 24'
+              strokeWidth={3}
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M5 15l7-7 7 7'
+              />
+            </svg>
+            <span className='text-xs font-semibold'>Esconder Menu</span>
+          </button>
+        )}
         <p className='text-xs font-semibold'>
           ⚠️ Modo Desenvolvimento - Menu de Navegação Temporário
         </p>
       </div>
     </header>
+
+    {/* Botão Expandir - Fixo no topo quando header retraído */}
+    {headerRetraido && (
+      <button
+        onClick={() => setHeaderRetraido(false)}
+        className='flex fixed top-2 left-1/2 transform -translate-x-1/2 bg-linear-to-r from-[#237EE6] to-[#60C9E6] hover:from-[#1e5fa8] hover:to-[#237EE6] text-white px-4 py-2 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 items-center gap-2 z-50 animate-fadeIn'
+        title='Expandir header'
+      >
+        <svg
+          className='w-4 h-4'
+          fill='none'
+          stroke='currentColor'
+          viewBox='0 0 24 24'
+          strokeWidth={3}
+        >
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            d='M19 9l-7 7-7-7'
+          />
+        </svg>
+        <span className='text-xs font-semibold'>Expandir Menu</span>
+      </button>
+    )}
+    </>
   )
 }

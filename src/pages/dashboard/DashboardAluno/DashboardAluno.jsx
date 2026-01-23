@@ -1,15 +1,19 @@
 import { useState } from 'react'
 import { FiHome, FiBarChart2, FiTarget, FiMapPin, FiCheckCircle, FiUser, FiMenu, FiX } from 'react-icons/fi'
+import Sidebar from '../../../components/layout/Sidebar/Sidebar'
+import { menuAluno } from '../../../config/dashboardMenus'
 import VisaoGeral from './components/VisaoGeral'
 import MeusHorarios from './components/MeusHorarios'
 import Locais from './components/Locais'
 import Frequencia from './components/Frequencia'
 import DadosCadastrais from './components/DadosCadastrais'
+import Documentos from './components/Documentos'
+import HeaderAluno from './components/HeaderAluno'
 
 export default function DashboardAluno() {
   const [abaSelecionada, setAbaSelecionada] = useState('overview')
-  const [menuMobileAberto, setMenuMobileAberto] = useState(false)
-
+  const [sidebarExpanded, setSidebarExpanded] = useState(true)
+  
   // Dados mock do aluno
   const aluno = {
     nome: 'João Silva Santos',
@@ -136,158 +140,21 @@ export default function DashboardAluno() {
   }
 
   return (
-    <div className='w-full min-h-screen bg-linear-to-br from-[#F5F7FA] to-white'>
-      {/* Header */}
-      <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white px-6 lg:px-12 py-10'>
-        <div className='max-w-7xl mx-auto'>
-          <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-            <div>
-              <h1 className='text-3xl lg:text-4xl font-bold mb-2 flex items-center gap-2'><FiHome size={36} /> Bem-vindo, {aluno.nome.split(' ')[0]}!</h1>
-              <p className='text-blue-100 text-sm lg:text-base'>Matrícula: {aluno.matricula} • Período: {aluno.periodo}º</p>
-            </div>
-            <div className='flex gap-4'>
-              <div className='bg-white/20 backdrop-blur rounded-xl px-6 py-3'>
-                <p className='text-blue-100 text-sm'>Frequência</p>
-                <p className='text-2xl font-bold'>{aluno.frequencia_percentual}%</p>
-              </div>
-              <div className='bg-white/20 backdrop-blur rounded-xl px-6 py-3'>
-                <p className='text-blue-100 text-sm'>Meus Horários</p>
-                <p className='text-2xl font-bold'>{aluno.vagas_ativas}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Abas de Navegação */}
-      <div className='border-b border-gray-200 bg-white sticky top-0 z-10'>
-        <div className='max-w-7xl mx-auto px-6 lg:px-12'>
-          {/* Menu Mobile (Hambúrguer) */}
-          <div className='md:hidden relative'>
-            <button
-              onClick={() => setMenuMobileAberto(!menuMobileAberto)}
-              className='flex items-center justify-between w-full py-4 text-gray-700 font-semibold'
-            >
-              <span className='flex items-center gap-2'>
-                {abaSelecionada === 'overview' && <><FiBarChart2 size={18} /> Visão Geral</>}
-                {abaSelecionada === 'vagas' && <><FiTarget size={18} /> Meus Horários</>}
-                {abaSelecionada === 'locais' && <><FiMapPin size={18} /> Locais</>}
-                {abaSelecionada === 'frequencia' && <><FiCheckCircle size={18} /> Frequência</>}
-                {abaSelecionada === 'dados' && <><FiUser size={18} /> Dados Cadastrais</>}
-              </span>
-              {menuMobileAberto ? <FiX size={24} /> : <FiMenu size={24} />}
-            </button>
-            {menuMobileAberto && (
-              <div className='absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-b-lg shadow-lg z-20'>
-                <button
-                  onClick={() => { setAbaSelecionada('overview'); setMenuMobileAberto(false) }}
-                  className={`w-full text-left px-6 py-3 flex items-center gap-2 transition-colors ${
-                    abaSelecionada === 'overview'
-                      ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <FiBarChart2 size={18} /> Visão Geral
-                </button>
-                <button
-                  onClick={() => { setAbaSelecionada('vagas'); setMenuMobileAberto(false) }}
-                  className={`w-full text-left px-6 py-3 flex items-center gap-2 transition-colors ${
-                    abaSelecionada === 'vagas'
-                      ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <FiTarget size={18} /> Meus Horários
-                </button>
-                <button
-                  onClick={() => { setAbaSelecionada('locais'); setMenuMobileAberto(false) }}
-                  className={`w-full text-left px-6 py-3 flex items-center gap-2 transition-colors ${
-                    abaSelecionada === 'locais'
-                      ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <FiMapPin size={18} /> Locais
-                </button>
-                <button
-                  onClick={() => { setAbaSelecionada('frequencia'); setMenuMobileAberto(false) }}
-                  className={`w-full text-left px-6 py-3 flex items-center gap-2 transition-colors ${
-                    abaSelecionada === 'frequencia'
-                      ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <FiCheckCircle size={18} /> Frequência
-                </button>
-                <button
-                  onClick={() => { setAbaSelecionada('dados'); setMenuMobileAberto(false) }}
-                  className={`w-full text-left px-6 py-3 flex items-center gap-2 transition-colors ${
-                    abaSelecionada === 'dados'
-                      ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <FiUser size={18} /> Dados Cadastrais
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Menu Desktop (Tabs Horizontais) */}
-          <div className='hidden md:flex gap-8'>
-            <button
-              onClick={() => setAbaSelecionada('overview')}
-              className={`py-4 px-2 font-semibold text-sm lg:text-base transition-all duration-300 border-b-2 ${
-                abaSelecionada === 'overview'
-                  ? 'border-[#237EE6] text-[#237EE6]'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <FiBarChart2 size={18} className='inline mr-1' /> Visão Geral
-            </button>
-            <button
-              onClick={() => setAbaSelecionada('vagas')}
-              className={`py-4 px-2 font-semibold text-sm lg:text-base transition-all duration-300 border-b-2 ${
-                abaSelecionada === 'vagas'
-                  ? 'border-[#237EE6] text-[#237EE6]'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <FiTarget size={18} className='inline mr-1' /> Meus Horários
-            </button>
-            <button
-              onClick={() => setAbaSelecionada('locais')}
-              className={`py-4 px-2 font-semibold text-sm lg:text-base transition-all duration-300 border-b-2 ${
-                abaSelecionada === 'locais'
-                  ? 'border-[#237EE6] text-[#237EE6]'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <FiMapPin size={18} className='inline mr-1' /> Locais
-            </button>
-            <button
-              onClick={() => setAbaSelecionada('frequencia')}
-              className={`py-4 px-2 font-semibold text-sm lg:text-base transition-all duration-300 border-b-2 ${
-                abaSelecionada === 'frequencia'
-                  ? 'border-[#237EE6] text-[#237EE6]'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <FiCheckCircle size={18} className='inline mr-1' /> Frequência
-            </button>
-            <button
-              onClick={() => setAbaSelecionada('dados')}
-              className={`py-4 px-2 font-semibold text-sm lg:text-base transition-all duration-300 border-b-2 ${
-                abaSelecionada === 'dados'
-                  ? 'border-[#237EE6] text-[#237EE6]'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <FiUser size={18} className='inline mr-1' /> Dados Cadastrais
-            </button>
-          </div>
-        </div>
-      </div>
+    <div className='flex w-full min-h-screen bg-linear-to-br from-[#F5F7FA] to-white overflow-x-hidden'>
+      {/* Sidebar Desktop */}
+      <Sidebar 
+        abaSelecionada={abaSelecionada} 
+        setAbaSelecionada={setAbaSelecionada}
+        menuItems={menuAluno}
+        titulo="Painel do Aluno"
+        subtitulo="v1.0.0"
+        onExpandChange={setSidebarExpanded}
+      />
+      
+      {/* Conteúdo Principal */}
+      <div className={`flex-1 transition-all duration-300 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
+        {/* Header */}
+        <HeaderAluno aluno={aluno} />
 
       {/* Conteúdo */}
       <div className='max-w-7xl mx-auto px-6 lg:px-12 py-10'>
@@ -297,7 +164,7 @@ export default function DashboardAluno() {
         )}
 
         {/* MEUS HORÁRIOS */}
-        {abaSelecionada === 'vagas' && (
+        {abaSelecionada === 'horarios' && (
           <MeusHorarios vagas={vagas} />
         )}
 
@@ -311,10 +178,16 @@ export default function DashboardAluno() {
           <Frequencia frequencia={frequencia} estagios={estagios} />
         )}
 
+        {/* DOCUMENTOS */}
+        {abaSelecionada === 'documentos' && (
+          <Documentos />
+        )}
+
         {/* DADOS CADASTRAIS */}
         {abaSelecionada === 'dados' && (
           <DadosCadastrais aluno={aluno} />
         )}
+      </div>
       </div>
     </div>
   )

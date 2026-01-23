@@ -1,6 +1,94 @@
-import { FiCheckCircle, FiTrendingUp, FiTarget } from 'react-icons/fi'
+import { useState, useEffect } from 'react'
+import { FiCheckCircle, FiTrendingUp, FiTarget, FiMapPin, FiX, FiClock, FiCalendar } from 'react-icons/fi'
 
 export default function Frequencia({ frequencia, estagios }) {
+  const [modalCheckinAberto, setModalCheckinAberto] = useState(false)
+  const [dataHoraAtual, setDataHoraAtual] = useState(new Date())
+  const [geolocalizacao, setGeolocalizacao] = useState(null)
+  const [carregandoGeo, setCarregandoGeo] = useState(false)
+
+  // Atualiza data e hora a cada segundo quando o modal está aberto
+  useEffect(() => {
+    if (modalCheckinAberto) {
+      const intervalo = setInterval(() => {
+        setDataHoraAtual(new Date())
+      }, 1000)
+      return () => clearInterval(intervalo)
+    }
+  }, [modalCheckinAberto])
+
+  // Formatar data e hora
+  const formatarData = (data) => {
+    return data.toLocaleDateString('pt-BR', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    })
+  }
+
+  const formatarHora = (data) => {
+    return data.toLocaleTimeString('pt-BR', { 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      second: '2-digit' 
+    })
+  }
+
+  // Obter geolocalização
+  const obterGeolocalizacao = () => {
+    setCarregandoGeo(true)
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setGeolocalizacao({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            precisao: position.coords.accuracy
+          })
+          setCarregandoGeo(false)
+        },
+        (error) => {
+          console.error('Erro ao obter localização:', error)
+          alert('Não foi possível obter sua localização. Verifique as permissões do navegador.')
+          setCarregandoGeo(false)
+        }
+      )
+    } else {
+      alert('Geolocalização não é suportada pelo seu navegador.')
+      setCarregandoGeo(false)
+    }
+  }
+
+  // Fazer check-in
+  const realizarCheckin = () => {
+    if (!geolocalizacao) {
+      alert('Por favor, registre sua localização antes de fazer o check-in.')
+      return
+    }
+
+    // Aqui seria a chamada para a API
+    console.log('Check-in realizado:', {
+      data: dataHoraAtual,
+      localizacao: geolocalizacao,
+      local: localEstagioHoje
+    })
+
+    alert('Check-in realizado com sucesso!')
+    setModalCheckinAberto(false)
+    setGeolocalizacao(null)
+  }
+
+  // Mock: Local de estágio do dia (deveria vir de uma API ou props)
+  const localEstagioHoje = {
+    nome: 'Hospital Municipal São José',
+    especialidade: 'Clínica Médica',
+    endereco: 'Rua das Flores, 123 - Centro',
+    horario_entrada: '08:00',
+    horario_saida: '12:00',
+    preceptor: 'Dr. João Silva'
+  }
+
   return (
     <div className='space-y-6'>
       <h2 className='text-3xl font-bold text-gray-900'>✅ Minha Frequência</h2>
@@ -61,11 +149,164 @@ export default function Frequencia({ frequencia, estagios }) {
 
       {/* Botão de Check-in */}
       <div className='flex justify-center'>
-        <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-bold py-4 px-8 rounded-xl hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 text-lg flex items-center gap-3'>
+        <button 
+          onClick={() => setModalCheckinAberto(true)}
+          className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-bold py-4 px-8 rounded-xl hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 text-lg flex items-center gap-3'
+        >
           <span>📍</span>
           Fazer Check-in Agora
         </button>
       </div>
+
+      {/* Modal de Check-in */}
+      {modalCheckinAberto && (
+        <div className='fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn'>
+          <div className='bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto'>
+            {/* Header do Modal */}
+            <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] px-6 py-4 flex items-center justify-between rounded-t-2xl'>
+              <h3 className='text-xl font-bold text-white flex items-center gap-2'>
+                <FiMapPin size={24} />
+                Check-in de Presença
+              </h3>
+              <button
+                onClick={() => {
+                  setModalCheckinAberto(false)
+                  setGeolocalizacao(null)
+                }}
+                className='text-white hover:bg-white/20 p-2 rounded-lg transition-all duration-300'
+              >
+                <FiX size={24} />
+              </button>
+            </div>
+
+            {/* Conteúdo do Modal */}
+            <div className='p-6 space-y-6'>
+              {/* Data e Hora Atual */}
+              <div className='bg-linear-to-r from-blue-50 to-cyan-50 rounded-xl p-4 border-2 border-blue-200'>
+                <div className='flex items-center gap-3 mb-3'>
+                  <FiCalendar className='text-[#237EE6]' size={24} />
+                  <p className='text-sm font-semibold text-gray-700'>Data</p>
+                </div>
+                <p className='text-lg font-bold text-gray-900 capitalize mb-4'>
+                  {formatarData(dataHoraAtual)}
+                </p>
+                
+                <div className='flex items-center gap-3 mb-3'>
+                  <FiClock className='text-[#237EE6]' size={24} />
+                  <p className='text-sm font-semibold text-gray-700'>Horário</p>
+                </div>
+                <p className='text-3xl font-bold text-[#237EE6]'>
+                  {formatarHora(dataHoraAtual)}
+                </p>
+              </div>
+
+              {/* Informações do Local de Estágio */}
+              <div className='bg-white border-2 border-gray-200 rounded-xl p-4'>
+                <h4 className='text-lg font-bold text-gray-900 mb-4 flex items-center gap-2'>
+                  <span>🏥</span>
+                  Local de Estágio
+                </h4>
+                <div className='space-y-3'>
+                  <div>
+                    <p className='text-sm text-gray-600'>Nome do Local</p>
+                    <p className='text-base font-bold text-gray-900'>{localEstagioHoje.nome}</p>
+                  </div>
+                  <div>
+                    <p className='text-sm text-gray-600'>Especialidade</p>
+                    <p className='text-base font-semibold text-[#237EE6]'>{localEstagioHoje.especialidade}</p>
+                  </div>
+                  <div>
+                    <p className='text-sm text-gray-600'>Endereço</p>
+                    <p className='text-base text-gray-700'>{localEstagioHoje.endereco}</p>
+                  </div>
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div>
+                      <p className='text-sm text-gray-600'>Entrada</p>
+                      <p className='text-base font-semibold text-gray-900'>{localEstagioHoje.horario_entrada}</p>
+                    </div>
+                    <div>
+                      <p className='text-sm text-gray-600'>Saída</p>
+                      <p className='text-base font-semibold text-gray-900'>{localEstagioHoje.horario_saida}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className='text-sm text-gray-600'>Preceptor</p>
+                    <p className='text-base font-semibold text-gray-900'>{localEstagioHoje.preceptor}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Geolocalização */}
+              <div className='bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4'>
+                <h4 className='text-base font-bold text-gray-900 mb-3 flex items-center gap-2'>
+                  <FiMapPin className='text-yellow-600' size={20} />
+                  Localização
+                </h4>
+                {geolocalizacao ? (
+                  <div className='space-y-2'>
+                    <div className='flex items-center gap-2 text-sm'>
+                      <span className='text-green-600 font-semibold'>✓ Localização registrada</span>
+                    </div>
+                    <div className='bg-white rounded-lg p-3 text-xs space-y-1'>
+                      <p><strong>Latitude:</strong> {geolocalizacao.latitude.toFixed(6)}</p>
+                      <p><strong>Longitude:</strong> {geolocalizacao.longitude.toFixed(6)}</p>
+                      <p><strong>Precisão:</strong> ±{geolocalizacao.precisao.toFixed(0)}m</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <p className='text-sm text-gray-700 mb-3'>
+                      É necessário registrar sua localização para confirmar sua presença no local de estágio.
+                    </p>
+                    <button
+                      onClick={obterGeolocalizacao}
+                      disabled={carregandoGeo}
+                      className='w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2'
+                    >
+                      {carregandoGeo ? (
+                        <>
+                          <div className='w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+                          Obtendo localização...
+                        </>
+                      ) : (
+                        <>
+                          <FiMapPin size={20} />
+                          Registrar Localização
+                        </>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Botões de Ação */}
+              <div className='flex gap-3'>
+                <button
+                  onClick={() => {
+                    setModalCheckinAberto(false)
+                    setGeolocalizacao(null)
+                  }}
+                  className='flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-xl transition-all duration-300'
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={realizarCheckin}
+                  disabled={!geolocalizacao}
+                  className={`flex-1 font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${
+                    geolocalizacao
+                      ? 'bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white hover:shadow-xl hover:scale-105'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  <FiCheckCircle size={20} />
+                  Confirmar Check-in
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Histórico de Estágios */}
       <div className='mt-12'>

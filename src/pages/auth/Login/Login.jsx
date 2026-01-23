@@ -98,7 +98,7 @@ export default function Login() {
 
             {/* Texto de suporte */}
             <p className='text-center text-sm text-gray-600'>
-              Não tem uma conta? <span className='text-[#237EE6] font-semibold'>Entre em contato com a instituição</span>
+              Não tem uma conta? <Link to='/cadastro' className='text-[#237EE6] font-semibold hover:underline'>Crie uma aqui</Link>
             </p>
           </div>
 

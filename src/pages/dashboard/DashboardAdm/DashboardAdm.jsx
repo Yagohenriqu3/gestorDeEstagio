@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { FiHome, FiUsers, FiMapPin, FiClipboard, FiBarChart2, FiSettings, FiPlus, FiUpload, FiMenu, FiX, FiTarget, FiCalendar, FiBook, FiClock, FiAward, FiStar, FiCheck, FiTrash2, FiEdit2, FiEye } from 'react-icons/fi'
 import { MdLocalHospital } from 'react-icons/md'
 
+import Sidebar from '../../../components/layout/Sidebar/Sidebar'
+import { menuAdministrador } from '../../../config/dashboardMenus'
 import VicaoGeralAdm from './components/VicaoGeralAdm'
 import InstituicoesUnidadesAdm from './components/InstituicoesUnidadesAdm'
 import ImportacaoCSVAdm from './components/ImportacaoCSVAdm'
@@ -9,24 +11,27 @@ import PreceptoresMultiplosAdm from './components/PreceptoresMultiplosAdm'
 import SemestreOfertasAdm from './components/SemestreOfertasAdm'
 import AlunosNaoAlocadosAdm from './components/AlunosNaoAlocadosAdm'
 import ListaAlunosAdm from './components/ListaAlunosAdm'
+import DisponibilidadePreceptoresAdm from './components/DisponibilidadePreceptoresAdm'
+import CurriculosAdm from './components/CurriculosAdm'
+import ComponentesCurricularesAdm from './components/ComponentesCurricularesAdm'
+import VagasAdm from './components/VagasAdm'
+import LocaisEstagioAdm from './components/LocaisEstagioAdm'
+import FrequenciaAdm from './components/FrequenciaAdm'
+import AvaliacoesAdm from './components/AvaliacoesAdm'
+import AusenciasAdm from './components/AusenciasAdm'
+import VacinasAdm from './components/VacinasAdm'
+import UsuariosAdm from './components/UsuariosAdm'
 
 export default function DashboardAdm() {
   const [abaSelecionada, setAbaSelecionada] = useState('overview')
+  const [sidebarExpanded, setSidebarExpanded] = useState(true)
   const [menuMobileAberto, setMenuMobileAberto] = useState(false)
   const [abaAlunos, setAbaAlunos] = useState('nao_alocados')
   const [abaInstituicoes, setAbaInstituicoes] = useState('unidades')
-  const [abaCurriculos, setAbaCurriculos] = useState('lista')
-  const [abaComponentes, setAbaComponentes] = useState('lista')
-  const [abaPreceptores, setAbaPreceptores] = useState('informacoes')
   const [abaPreceptoresSubMenu, setAbaPreceptoresSubMenu] = useState('lista')
   const [filtroLocais, setFiltroLocais] = useState('todos')
-  const [abaFrequencia, setAbaFrequencia] = useState('resumo')
-  const [abaAvaliacoes, setAbaAvaliacoes] = useState('resumo')
-  const [abaAusencias, setAbaAusencias] = useState('justificativas')
-  const [abaVacinas, setAbaVacinas] = useState('obrigatorias')
   const [abaUsuarios, setAbaUsuarios] = useState('lista')
   const [perfilSelecionado, setPerfilSelecionado] = useState(null)
-  const [usuarioSelecionadoAtribuir, setUsuarioSelecionadoAtribuir] = useState(null)
   const [modalAdicionarPreceptor, setModalAdicionarPreceptor] = useState(false)
   const [localSelecionadoParaPreceptor, setLocalSelecionadoParaPreceptor] = useState(null)
   const [preceptoresSelecionados, setPreceptoresSelecionados] = useState([])
@@ -1104,15 +1109,27 @@ export default function DashboardAdm() {
   }
 
   return (
-    <div className='w-full min-h-screen bg-linear-to-br from-[#F5F7FA] to-white'>
-      {/* Header */}
-      <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white px-6 lg:px-12 py-10'>
-        <h1 className='text-4xl font-bold'>Dashboard Administrativo</h1>
-        <p className='text-blue-100 mt-2'>Gestão completa de estágios e instituições</p>
-      </div>
+    <div className='flex w-full min-h-screen bg-linear-to-br from-[#F5F7FA] to-white overflow-x-hidden'>
+      {/* Sidebar Desktop */}
+      <Sidebar 
+        abaSelecionada={abaSelecionada} 
+        setAbaSelecionada={setAbaSelecionada}
+        menuItems={menuAdministrador}
+        titulo="Painel Administrativo"
+        subtitulo="v1.0.0"
+        onExpandChange={setSidebarExpanded}
+      />
+      
+      {/* Conteúdo Principal */}
+      <div className={`flex-1 transition-all duration-300 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
+        {/* Header */}
+        <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white px-6 lg:px-12 py-10'>
+          <h1 className='text-4xl font-bold'>Dashboard Administrativo</h1>
+          <p className='text-blue-100 mt-2'>Gestão completa de estágios e instituições</p>
+        </div>
 
-      {/* Tabs */}
-      <div className='px-6 lg:px-12 py-6'>
+        {/* Tabs Mobile */}
+        <div className='px-6 lg:px-12 py-6'>
         <div className='mb-6 border-b-2 border-gray-200 pb-4'>
           {/* Mobile: Botão Hambúrguer + Aba Atual */}
           <div className='md:hidden mb-4'>
@@ -1162,8 +1179,8 @@ export default function DashboardAdm() {
             )}
           </div>
 
-          {/* Desktop: Abas Horizontais */}
-          <div className='hidden md:block overflow-x-auto whitespace-nowrap -mx-2 px-2'>
+          {/* Desktop: Abas Horizontais - REMOVIDO, usando Sidebar */}
+          <div className='hidden'>
             <div className='flex gap-2 md:flex-wrap'>
           <button
             onClick={() => setAbaSelecionada('overview')}
@@ -1358,64 +1375,13 @@ export default function DashboardAdm() {
 
               {/* Conteúdo da sub-aba Disponibilidade */}
               {abaPreceptoresSubMenu === 'disponibilidade' && (
-                <div className='space-y-6'>
-                  <div className='flex justify-between items-center'>
-                    <h2 className='text-3xl font-bold text-gray-900'>Disponibilidade de Preceptores</h2>
-                    <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
-                      <FiPlus size={18} /> Nova Disponibilidade
-                    </button>
-                  </div>
-                  <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
-                    <div className='overflow-x-auto'>
-                      <table className='w-full'>
-                        <thead>
-                          <tr className='border-b-2 border-gray-200 bg-gray-50'>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Preceptor</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Componente</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Local</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Turno</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Horário</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Capacidade</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Alocados</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {disponibilidades.map((disp) => (
-                            <tr key={disp.id_disponibilidade} className='border-b border-gray-200 hover:bg-[#F5F7FA] transition-colors'>
-                              <td className='px-6 py-4 text-sm font-semibold text-gray-900'>{disp.nome_preceptor}</td>
-                              <td className='px-6 py-4 text-sm text-gray-700'>{disp.nome_componente}</td>
-                              <td className='px-6 py-4 text-sm text-gray-700'>{disp.nome_local}</td>
-                              <td className='px-6 py-4 text-sm text-gray-700'>{disp.turno}</td>
-                              <td className='px-6 py-4 text-sm text-gray-700'>{disp.horario_inicio} - {disp.horario_fim}</td>
-                              <td className='px-6 py-4 text-sm text-gray-700'>{disp.capacidade_alunos}</td>
-                              <td className='px-6 py-4 text-sm text-gray-700'>
-                                <div className='flex items-center gap-2'>
-                                  <div className='w-16 bg-gray-200 rounded-full h-2'>
-                                    <div
-                                      className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
-                                      style={{ width: `${(disp.alunos_alocados / disp.capacidade_alunos) * 100}%` }}
-                                    ></div>
-                                  </div>
-                                  <span className='font-semibold'>{disp.alunos_alocados}/{disp.capacidade_alunos}</span>
-                                </div>
-                              </td>
-                              <td className='px-6 py-4'>
-                                <span className='px-3 py-1 rounded-lg text-xs font-semibold bg-[#10E686]/20 text-[#10E686]'>{disp.status}</span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
+                <DisponibilidadePreceptoresAdm disponibilidades={disponibilidades} />
               )}
             </div>
           )}
 
           {/* SEMESTRE E OFERTAS */}
-          {abaSelecionada === 'semestre' && (
+          {abaSelecionada === 'ofertas' && (
             <SemestreOfertasAdm ofertas={ofertas} />
           )}
 
@@ -1476,989 +1442,68 @@ export default function DashboardAdm() {
 
           {/* CURRÍCULOS DE ESTÁGIO */}
           {abaSelecionada === 'curriculos' && (
-            <div className='space-y-6'>
-              <div className='flex justify-between items-center'>
-                <h2 className='text-3xl font-bold text-gray-900'>Currículos de Estágio</h2>
-                <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
-                  <FiPlus size={18} /> Novo Currículo
-                </button>
-              </div>
-              <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
-                <div className='overflow-x-auto'>
-                  <table className='w-full'>
-                    <thead>
-                      <tr className='border-b-2 border-gray-200 bg-gray-50'>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Currículo</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Curso</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Período Mín.</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Carga Horária</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Versão</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Status</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {curriculos.map((curr) => {
-                        const curso = cursos.find(c => c.id_curso === curr.id_curso)
-                        return (
-                          <tr key={curr.id_curriculo} className='border-b border-gray-200 hover:bg-[#F5F7FA] transition-colors'>
-                            <td className='px-6 py-4 text-sm font-semibold text-gray-900'>{curr.nome_curriculo}</td>
-                            <td className='px-6 py-4 text-sm text-gray-700'>{curso?.nome_curso || 'N/A'}</td>
-                            <td className='px-6 py-4 text-sm text-gray-700'>{curr.periodo_obrigatorio_minimo}º</td>
-                            <td className='px-6 py-4 text-sm text-gray-700'>{curr.carga_horaria_total}h</td>
-                            <td className='px-6 py-4 text-sm text-gray-700'>{curr.versao}</td>
-                            <td className='px-6 py-4'>
-                              <span className='px-3 py-1 rounded-lg text-xs font-semibold bg-[#10E686]/20 text-[#10E686]'>{curr.status}</span>
-                            </td>
-                            <td className='px-6 py-4 text-sm'>
-                              <button className='text-[#237EE6] hover:text-[#154c8b] font-semibold'>Editar</button>
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <CurriculosAdm curriculos={curriculos} cursos={cursos} />
           )}
 
           {/* COMPONENTES CURRICULARES */}
           {abaSelecionada === 'componentes' && (
-            <div className='space-y-6'>
-               {/* Cards de Resumo */}
-                          <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                            <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
-                              <div className='flex items-center justify-between mb-4'>
-                                <h3 className='text-lg font-semibold text-gray-900'>Total de Componentes</h3>
-                                <FiBook size={32} className='text-[#237EE6]' />
-                              </div>
-                              <p className='text-4xl font-bold text-[#237EE6] mb-2'>{componentes.length}</p>
-                              <p className='text-sm text-gray-600'>Componentes ofertados</p>
-                            </div>
-              
-                            <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
-                              <div className='flex items-center justify-between mb-4'>
-                                <h3 className='text-lg font-semibold text-gray-900'>Carga Horária Total</h3>
-                                <FiClock size={32} className='text-[#10E686]' />
-                              </div>
-                              <p className='text-4xl font-bold text-[#10E686] mb-2'>{componentes.reduce((acc, c) => acc + c.carga_horaria, 0)}h</p>
-                              <p className='text-sm text-gray-600'>Total de horas</p>
-                            </div>
-              
-                            <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
-                              <div className='flex items-center justify-between mb-4'>
-                                <h3 className='text-lg font-semibold text-gray-900'>Créditos Totais</h3>
-                                <FiAward size={32} className='text-[#60C9E6]' />
-                              </div>
-                              <p className='text-4xl font-bold text-[#60C9E6] mb-2'>{componentes.reduce((acc, c) => acc + c.creditos, 0)}</p>
-                              <p className='text-sm text-gray-600'>Créditos ofertados</p>
-                            </div>
-                          </div>
-              <div className='flex justify-between items-center'>
-                <h2 className='text-3xl font-bold text-gray-900'>Componentes Curriculares</h2>
-                <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
-                  <FiPlus size={18} /> Novo Componente
-                </button>
-              </div>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                {componentes.map((comp) => (
-                  <div key={comp.id_componente} className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
-                    <div className='flex justify-between items-start mb-3'>
-                      <div>
-                        <p className='text-sm text-[#237EE6] font-semibold uppercase'>{comp.codigo_componente}</p>
-                        <h3 className='text-lg font-bold text-gray-900 mt-1'>{comp.nome_componente}</h3>
-                      </div>
-                      <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-                        comp.tipo === 'Obrigatório' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
-                      }`}>
-                        {comp.tipo}
-                      </span>
-                    </div>
-                    <p className='text-sm text-gray-600 mb-3'>{comp.descricao}</p>
-                    <div className='grid grid-cols-2 gap-3 mb-4 text-sm'>
-                      <div>
-                        <p className='text-gray-600 text-xs'>Carga Horária</p>
-                        <p className='font-semibold text-gray-900'>{comp.carga_horaria}h</p>
-                      </div>
-                      <div>
-                        <p className='text-gray-600 text-xs'>Créditos</p>
-                        <p className='font-semibold text-gray-900'>{comp.creditos}</p>
-                      </div>
-                      <div>
-                        <p className='text-gray-600 text-xs'>Semestre</p>
-                        <p className='font-semibold text-gray-900'>{comp.semestre_ideal}º</p>
-                      </div>
-                      <div>
-                        <p className='text-gray-600 text-xs'>Status</p>
-                        <span className='text-xs font-semibold text-[#10E686]'>✓ Ativo</span>
-                      </div>
-                    </div>
-                    <div className='mb-4'>
-                      <p className='text-xs text-gray-600 mb-2'>Competências:</p>
-                      <div className='flex flex-wrap gap-2'>
-                        {comp.competencias.map((competencia, idx) => (
-                          <span key={idx} className='text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded'>
-                            {competencia}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <button className='w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-2 rounded-lg transition-colors'>
-                      Detalhes
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <ComponentesCurricularesAdm componentes={componentes} />
           )}
 
           {/* VAGAS */}
           {abaSelecionada === 'vagas' && (
-            <div className='space-y-6'>
-              <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-                <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'><FiTarget size={32} /> Gestão de Vagas</h2>
-                <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
-                  <FiPlus size={18} /> Nova Vaga
-                </button>
-              </div>
-
-              {/* Grid de Vagas */}
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                {vagas.map((vaga) => (
-                  <div key={vaga.id} className='bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300'>
-                    <div className={`h-2 bg-linear-to-r ${
-                      vaga.status === 'Completa'
-                        ? 'from-gray-400 to-gray-500'
-                        : 'from-[#10E686] to-[#60E6D7]'
-                    }`}></div>
-                    <div className='p-6'>
-                      <div className='flex justify-between items-start mb-4'>
-                        <div>
-                          <p className='text-sm text-[#237EE6] font-semibold uppercase'>{vaga.especialidade}</p>
-                          <h3 className='text-lg font-bold text-gray-900 mt-1'>{vaga.local}</h3>
-                        </div>
-                        <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-                          vaga.status === 'Completa'
-                            ? 'bg-gray-200 text-gray-700'
-                            : 'bg-[#10E686]/20 text-[#10E686]'
-                        }`}>
-                          {vaga.status}
-                        </span>
-                      </div>
-
-                      <div className='mb-4'>
-                        <p className='text-sm text-gray-600 mb-2'>👨‍⚕️ {vaga.preceptor}</p>
-                        <div className='flex items-center justify-between mb-2'>
-                          <p className='text-sm text-gray-700 font-semibold'>Ocupação</p>
-                          <p className='text-sm text-gray-600'>{vaga.ocupadas} de {vaga.total}</p>
-                        </div>
-                        <div className='w-full bg-gray-200 rounded-full h-2'>
-                          <div
-                            className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
-                            style={{ width: `${(vaga.ocupadas / vaga.total) * 100}%` }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className='flex gap-3'>
-                        <button className='flex-1 bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold py-2 rounded-lg hover:shadow-lg transition-all duration-300 text-sm flex items-center justify-center gap-1'>
-                          <FiEdit2 size={16} /> Editar
-                        </button>
-                        <button className='flex-1 bg-white border-2 border-[#237EE6] text-[#237EE6] font-semibold py-2 rounded-lg hover:bg-[#F5F7FA] transition-all duration-300 text-sm flex items-center justify-center gap-1'>
-                          <FiEye size={16} /> Ver Alunos
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <VagasAdm vagas={vagas} />
           )}
 
           {/* LOCAIS */}
           {abaSelecionada === 'locais' && (
-            <div className='space-y-6'>
-              <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-                <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'><MdLocalHospital size={32} /> Gerenciamento de Locais</h2>
-                <div className='flex gap-3 flex-wrap'>
-                  <select
-                    value={filtroLocais}
-                    onChange={(e) => setFiltroLocais(e.target.value)}
-                    className='px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#237EE6] focus:outline-none'
-                  >
-                    <option value='todos'>Todos ({locais.length})</option>
-                    <option value='ativos'>Ativos ({locais.filter(l => l.status === 'Ativo').length})</option>
-                    <option value='inativos'>Inativos ({locais.filter(l => l.status === 'Inativo').length})</option>
-                  </select>
-                  <button 
-                    onClick={() => setModalCriarEspecialidade(true)}
-                    className='bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'
-                  >
-                    <FiStar size={18} /> Nova Especialidade
-                  </button>
-                  <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
-                    <FiPlus size={18} /> Novo Local
-                  </button>
-                </div>
-              </div>
-
-              {/* Tabela de Locais */}
-              <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
-                <div className='overflow-x-auto'>
-                  <table className='w-full'>
-                    <thead>
-                      <tr className='border-b-2 border-gray-200 bg-gray-50'>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Local</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Tipo</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Cidade</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Alunos</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Vagas</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Convênio</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Status</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Ações</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {locaisFiltrados.map((local) => (
-                        <tr key={local.id} className='border-b border-gray-200 hover:bg-[#F5F7FA] transition-colors duration-300'>
-                          <td className='px-6 py-4 text-sm text-gray-900 font-medium'>{local.nome}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{local.tipo}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{local.cidade}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700 font-semibold'>{local.alunos}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700 font-semibold'>{local.vagas}</td>
-                          <td className='px-6 py-4'>
-                            <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-                              local.convenio === 'Vigente'
-                                ? 'bg-[#10E686]/20 text-[#10E686]'
-                                : 'bg-red-100 text-red-700'
-                            }`}>
-                              {local.convenio}
-                            </span>
-                          </td>
-                          <td className='px-6 py-4'>
-                            <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-                              local.status === 'Ativo'
-                                ? 'bg-[#60E6D7]/20 text-[#60E6D7]'
-                                : 'bg-gray-200 text-gray-700'
-                            }`}>
-                              {local.status}
-                            </span>
-                          </td>
-                          <td className='px-6 py-4'>
-                            <div className='flex gap-2 items-center flex-wrap'>
-                              <button 
-                                onClick={() => {
-                                  setLocalSelecionadoParaEspecialidades(local)
-                                  setEspecialidadesSelecionadas(locaisComEspecialidades[local.id] || [])
-                                  setModalEspecialidadesLocal(true)
-                                }}
-                                className='text-[#10E686] hover:text-[#0ab859] font-semibold text-sm transition-colors duration-300 flex items-center gap-1'
-                                title='Gerenciar especialidades'
-                              >
-                                <FiStar size={16} /> Especialidades
-                              </button>
-                              <button 
-                                onClick={() => {
-                                  setLocalSelecionadoParaPreceptor(local)
-                                  setModalAdicionarPreceptor(true)
-                                }}
-                                className='text-[#237EE6] hover:text-[#154c8b] font-semibold text-sm transition-colors duration-300 flex items-center gap-1'
-                                title='Adicionar preceptor'
-                              >
-                                <FiPlus size={16} /> Preceptor
-                              </button>
-                              <button className='text-gray-600 hover:text-gray-900 font-semibold text-sm transition-colors duration-300 flex items-center gap-1'>
-                                <FiEdit2 size={16} /> Editar
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              {/* Seção de Preceptores por Local */}
-              {Object.keys(preceptoresAdicionadosPorLocal).length > 0 && (
-                <div className='bg-white rounded-2xl shadow-md p-6'>
-                  <h3 className='text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2'>
-                    <FiUsers size={24} /> Preceptores Alocados por Local
-                  </h3>
-                  <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-                    {Object.entries(preceptoresAdicionadosPorLocal).map(([localId, preceptores]) => {
-                      const local = locais.find(l => l.id === parseInt(localId))
-                      return (
-                        <div key={localId} className='border-2 border-gray-200 rounded-xl p-4'>
-                          <div className='flex items-center justify-between mb-4'>
-                            <h4 className='text-lg font-semibold text-gray-900'>{local?.nome}</h4>
-                            <span className='px-3 py-1 bg-[#237EE6]/10 text-[#237EE6] rounded-lg text-xs font-semibold'>
-                              {preceptores.length} preceptor{preceptores.length !== 1 ? 'es' : ''}
-                            </span>
-                          </div>
-                          <div className='space-y-2'>
-                            {preceptores.map((preceptor) => (
-                              <div key={preceptor.id} className='flex items-center justify-between p-2 bg-gray-50 rounded-lg'>
-                                <div>
-                                  <p className='text-sm font-semibold text-gray-900'>{preceptor.nome}</p>
-                                  <p className='text-xs text-gray-600'>{preceptor.crm}</p>
-                                </div>
-                                <button
-                                  onClick={() => {
-                                    const updated = { ...preceptoresAdicionadosPorLocal }
-                                    updated[localId] = updated[localId].filter(p => p.id !== preceptor.id)
-                                    if (updated[localId].length === 0) {
-                                      delete updated[localId]
-                                    }
-                                    setPreceptoresAdicionadosPorLocal(updated)
-                                  }}
-                                  className='text-red-600 hover:text-red-700 transition-colors'
-                                  title='Remover preceptor'
-                                >
-                                  <FiTrash2 size={16} />
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Seção de Especialidades por Local */}
-              {Object.keys(locaisComEspecialidades).length > 0 && (
-                <div className='bg-white rounded-2xl shadow-md p-6'>
-                  <h3 className='text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2'>
-                    <FiStar size={24} /> Especialidades por Local
-                  </h3>
-                  <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-                    {Object.entries(locaisComEspecialidades).map(([localId, especialidades]) => {
-                      const local = locais.find(l => l.id === parseInt(localId))
-                      return (
-                        <div key={localId} className='border-2 border-[#10E686]/30 rounded-xl p-4 bg-gradient-to-br from-[#10E686]/5 to-[#60E6D7]/5'>
-                          <div className='flex items-center justify-between mb-4'>
-                            <h4 className='text-lg font-semibold text-gray-900'>{local?.nome}</h4>
-                            <span className='px-3 py-1 bg-[#10E686]/20 text-[#10E686] rounded-lg text-xs font-semibold'>
-                              {especialidades.length} especialidade{especialidades.length !== 1 ? 's' : ''}
-                            </span>
-                          </div>
-                          <div className='flex flex-wrap gap-2'>
-                            {especialidades.map((esp) => (
-                              <span 
-                                key={esp.id}
-                                className='px-3 py-1 bg-white border border-[#10E686]/40 text-gray-700 rounded-lg text-xs font-medium flex items-center gap-1'
-                              >
-                                <FiStar size={12} className='text-[#10E686]' />
-                                {esp.nome}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
+            <LocaisEstagioAdm 
+              locais={locais}
+              filtroLocais={filtroLocais}
+              setFiltroLocais={setFiltroLocais}
+              setModalCriarEspecialidade={setModalCriarEspecialidade}
+              locaisFiltrados={locaisFiltrados}
+              setLocalSelecionadoParaEspecialidades={setLocalSelecionadoParaEspecialidades}
+              setEspecialidadesSelecionadas={setEspecialidadesSelecionadas}
+              locaisComEspecialidades={locaisComEspecialidades}
+              setModalEspecialidadesLocal={setModalEspecialidadesLocal}
+              setLocalSelecionadoParaPreceptor={setLocalSelecionadoParaPreceptor}
+              setModalAdicionarPreceptor={setModalAdicionarPreceptor}
+              preceptoresAdicionadosPorLocal={preceptoresAdicionadosPorLocal}
+              setPreceptoresAdicionadosPorLocal={setPreceptoresAdicionadosPorLocal}
+            />
           )}
 
           {/* FREQUÊNCIA - RESUMO */}
           {abaSelecionada === 'frequencia' && (
-            <div className='space-y-6'>
-              <h2 className='text-3xl font-bold text-gray-900'>Resumo de Frequência</h2>
-              <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
-                <div className='overflow-x-auto'>
-                  <table className='w-full'>
-                    <thead>
-                      <tr className='border-b-2 border-gray-200 bg-gray-50'>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Aluno</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Registros</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Presenças</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Faltas</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Frequência</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {frequenciaResumo.map((freq) => (
-                        <tr key={freq.id_aluno} className='border-b border-gray-200 hover:bg-[#F5F7FA]'>
-                          <td className='px-6 py-4 text-sm font-semibold text-gray-900'>{freq.aluno}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{freq.total_registros}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{freq.presencas}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{freq.faltas}</td>
-                          <td className='px-6 py-4'>
-                            <div className='flex items-center gap-2'>
-                              <div className='w-16 bg-gray-200 rounded-full h-2'>
-                                <div className='bg-linear-to-r from-[#10E686] to-[#60E6D7] h-2 rounded-full' style={{width: `${freq.frequencia_pct}%`}}></div>
-                              </div>
-                              <span className='text-sm font-semibold'>{freq.frequencia_pct.toFixed(1)}%</span>
-                            </div>
-                          </td>
-                          <td className='px-6 py-4'><span className={`px-3 py-1 rounded-lg text-xs font-semibold ${freq.status === 'OK' ? 'bg-[#10E686]/20 text-[#10E686]' : 'bg-orange-100 text-orange-700'}`}>{freq.status}</span></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <FrequenciaAdm frequenciaResumo={frequenciaResumo} />
           )}
 
           {/* AVALIAÇÕES */}
           {abaSelecionada === 'avaliacoes' && (
-            <div className='space-y-6'>
-              <h2 className='text-3xl font-bold text-gray-900'>Avaliações de Alunos</h2>
-              <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
-                <div className='overflow-x-auto'>
-                  <table className='w-full'>
-                    <thead>
-                      <tr className='border-b-2 border-gray-200 bg-gray-50'>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Aluno</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Componente</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Nota</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Avaliador</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Situação</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Feedback</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {avaliacoes.map((av) => (
-                        <tr key={av.id_avaliacao} className='border-b border-gray-200 hover:bg-[#F5F7FA]'>
-                          <td className='px-6 py-4 text-sm font-semibold text-gray-900'>{av.aluno}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{av.componente}</td>
-                          <td className='px-6 py-4 text-sm font-semibold'>{av.nota ? av.nota.toFixed(1) : '-'}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{av.avaliador}</td>
-                          <td className='px-6 py-4'><span className={`px-3 py-1 rounded-lg text-xs font-semibold ${av.situacao === 'Realizada' ? 'bg-[#10E686]/20 text-[#10E686]' : 'bg-yellow-100 text-yellow-700'}`}>{av.situacao}</span></td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{av.feedback}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <AvaliacoesAdm avaliacoes={avaliacoes} />
           )}
 
           {/* AUSÊNCIAS E JUSTIFICATIVAS */}
           {abaSelecionada === 'ausencias' && (
-            <div className='space-y-6'>
-              <h2 className='text-3xl font-bold text-gray-900'>Gestão de Ausências</h2>
-              <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
-                <div className='overflow-x-auto'>
-                  <table className='w-full'>
-                    <thead>
-                      <tr className='border-b-2 border-gray-200 bg-gray-50'>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Aluno</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Data Falta</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Tipo</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Descrição</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Status</th>
-                        <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Reposição</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {justificativas.map((just) => (
-                        <tr key={just.id_justificativa} className='border-b border-gray-200 hover:bg-[#F5F7FA]'>
-                          <td className='px-6 py-4 text-sm font-semibold text-gray-900'>{just.aluno}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{just.data_falta}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{just.tipo}</td>
-                          <td className='px-6 py-4 text-sm text-gray-700'>{just.descricao}</td>
-                          <td className='px-6 py-4'><span className={`px-3 py-1 rounded-lg text-xs font-semibold ${just.status === 'Aprovada' ? 'bg-[#10E686]/20 text-[#10E686]' : 'bg-yellow-100 text-yellow-700'}`}>{just.status}</span></td>
-                          <td className='px-6 py-4 text-sm'>{just.requer_reposicao ? `${just.horas_reposicao}h` : '-'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <AusenciasAdm justificativas={justificativas} />
           )}
 
           {/* VACINAS */}
           {abaSelecionada === 'vacinas' && (
-            <div className='space-y-6'>
-              <h2 className='text-3xl font-bold text-gray-900'>Gestão de Vacinas</h2>
-              <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-                <div className='space-y-4'>
-                  <h3 className='text-xl font-bold text-gray-900'>Vacinas Obrigatórias</h3>
-                  <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
-                    <div className='overflow-x-auto'>
-                      <table className='w-full'>
-                        <thead>
-                          <tr className='border-b-2 border-gray-200 bg-gray-50'>
-                            <th className='px-4 py-3 text-left text-sm font-semibold text-gray-900'>Vacina</th>
-                            <th className='px-4 py-3 text-left text-sm font-semibold text-gray-900'>Doses</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {vacinasObrigatorias.map((vac) => (
-                            <tr key={vac.id_vacina} className='border-b border-gray-200 hover:bg-[#F5F7FA]'>
-                              <td className='px-4 py-3 text-sm font-semibold text-gray-900'>{vac.nome}</td>
-                              <td className='px-4 py-3 text-sm text-gray-700'>{vac.doses_necessarias}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                <div className='space-y-4'>
-                  <h3 className='text-xl font-bold text-gray-900'>Conformidade por Aluno</h3>
-                  <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
-                    <div className='overflow-x-auto'>
-                      <table className='w-full text-sm'>
-                        <thead>
-                          <tr className='border-b-2 border-gray-200 bg-gray-50'>
-                            <th className='px-4 py-3 text-left text-xs font-semibold text-gray-900'>Aluno</th>
-                            <th className='px-4 py-3 text-left text-xs font-semibold text-gray-900'>Vacina</th>
-                            <th className='px-4 py-3 text-left text-xs font-semibold text-gray-900'>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {registroVacinas.map((reg, idx) => (
-                            <tr key={idx} className='border-b border-gray-200 hover:bg-[#F5F7FA]'>
-                              <td className='px-4 py-3 text-xs font-semibold text-gray-900'>{reg.aluno}</td>
-                              <td className='px-4 py-3 text-xs text-gray-700'>{reg.vacina}</td>
-                              <td className='px-4 py-3'><span className={`px-2 py-1 rounded text-xs font-semibold ${reg.status === 'Completo' ? 'bg-[#10E686]/20 text-[#10E686]' : 'bg-orange-100 text-orange-700'}`}>{reg.status}</span></td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <VacinasAdm vacinasObrigatorias={vacinasObrigatorias} registroVacinas={registroVacinas} />
           )}
 
           {/* GESTÃO DE USUÁRIOS E PERFIS */}
           {abaSelecionada === 'usuarios' && (
-            <div className='space-y-6'>
-              <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'><FiSettings size={32} /> Gestão de Usuários e Perfis</h2>
-
-              {/* Sub-abas */}
-              <div className='overflow-x-auto whitespace-nowrap -mx-2 px-2'>
-                <div className='flex gap-2 md:flex-wrap'>
-                  <button
-                    onClick={() => setAbaUsuarios('lista')}
-                    className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
-                      abaUsuarios === 'lista'
-                        ? 'bg-[#237EE6] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    <FiUsers size={18} /> Lista de Usuários
-                  </button>
-                  <button
-                    onClick={() => setAbaUsuarios('perfis')}
-                    className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
-                      abaUsuarios === 'perfis'
-                        ? 'bg-[#237EE6] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    <FiSettings size={18} /> Perfis de Acesso
-                  </button>
-                  <button
-                    onClick={() => setAbaUsuarios('atribuir')}
-                    className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
-                      abaUsuarios === 'atribuir'
-                        ? 'bg-[#237EE6] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    <FiClipboard size={18} /> Atribuir Funções
-                  </button>
-                </div>
-              </div>
-
-              {/* LISTA DE USUÁRIOS */}
-              {abaUsuarios === 'lista' && (
-                <div className='space-y-6'>
-                  <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-                    <div>
-                      <h3 className='text-xl font-bold text-gray-900'>Usuários Cadastrados</h3>
-                      <p className='text-sm text-gray-600 mt-1'>Total: {usuarios.length} usuários ativos</p>
-                    </div>
-                    <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
-                      <FiPlus size={18} /> Novo Usuário
-                    </button>
-                  </div>
-
-                  {/* Filtros */}
-                  <div className='bg-white rounded-2xl shadow-md p-6'>
-                    <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-                      <div>
-                        <label className='block text-sm font-semibold text-gray-700 mb-2'>Buscar</label>
-                        <input
-                          type='text'
-                          placeholder='Nome, CPF ou email...'
-                          className='w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#237EE6] focus:outline-none'
-                        />
-                      </div>
-                      <div>
-                        <label className='block text-sm font-semibold text-gray-700 mb-2'>Perfil</label>
-                        <select className='w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#237EE6] focus:outline-none'>
-                          <option value=''>Todos os perfis</option>
-                          {perfis.map(perfil => (
-                            <option key={perfil.id_perfil} value={perfil.id_perfil}>{perfil.nome_perfil}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className='block text-sm font-semibold text-gray-700 mb-2'>Instituição</label>
-                        <select className='w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#237EE6] focus:outline-none'>
-                          <option value=''>Todas</option>
-                          <option value='UNIFESP'>UNIFESP</option>
-                          <option value='USP'>USP</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className='block text-sm font-semibold text-gray-700 mb-2'>Status</label>
-                        <select className='w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#237EE6] focus:outline-none'>
-                          <option value=''>Todos</option>
-                          <option value='Ativo'>Ativo</option>
-                          <option value='Inativo'>Inativo</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Tabela de Usuários */}
-                  <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
-                    <div className='overflow-x-auto'>
-                      <table className='w-full'>
-                        <thead>
-                          <tr className='border-b-2 border-gray-200 bg-gray-50'>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Usuário</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>CPF</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Email</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Perfil</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Instituição</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Último Acesso</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Status</th>
-                            <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Ações</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {usuarios.map((usuario) => (
-                            <tr key={usuario.id_usuario} className='border-b border-gray-200 hover:bg-[#F5F7FA] transition-colors'>
-                              <td className='px-6 py-4'>
-                                <div>
-                                  <p className='text-sm font-semibold text-gray-900'>{usuario.nome}</p>
-                                  <p className='text-xs text-gray-600'>{usuario.unidade}</p>
-                                </div>
-                              </td>
-                              <td className='px-6 py-4 text-sm text-gray-700'>{usuario.cpf}</td>
-                              <td className='px-6 py-4 text-sm text-gray-700'>{usuario.email}</td>
-                              <td className='px-6 py-4'>
-                                <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-                                  usuario.perfil === 'Administrador' ? 'bg-purple-100 text-purple-700' :
-                                  usuario.perfil === 'Coordenador' ? 'bg-blue-100 text-blue-700' :
-                                  usuario.perfil === 'Preceptor' ? 'bg-green-100 text-green-700' :
-                                  usuario.perfil === 'Docente' ? 'bg-yellow-100 text-yellow-700' :
-                                  usuario.perfil === 'LGPD' ? 'bg-red-100 text-red-700' :
-                                  'bg-gray-100 text-gray-700'
-                                }`}>
-                                  {usuario.perfil}
-                                </span>
-                              </td>
-                              <td className='px-6 py-4 text-sm font-semibold text-[#237EE6]'>{usuario.instituicao}</td>
-                              <td className='px-6 py-4 text-xs text-gray-600'>{usuario.ultimo_acesso}</td>
-                              <td className='px-6 py-4'>
-                                <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-                                  usuario.status === 'Ativo' ? 'bg-[#10E686]/20 text-[#10E686]' : 'bg-red-100 text-red-700'
-                                }`}>
-                                  {usuario.status}
-                                </span>
-                              </td>
-                              <td className='px-6 py-4'>
-                                <div className='flex gap-2'>
-                                  <button className='text-[#237EE6] hover:text-[#154c8b] font-semibold text-sm'>
-                                    Editar
-                                  </button>
-                                  <button className='text-gray-600 hover:text-gray-900 font-semibold text-sm'>
-                                    Detalhes
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* PERFIS DE ACESSO */}
-              {abaUsuarios === 'perfis' && (
-                <div className='space-y-6'>
-                  <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
-                    <div>
-                      <h3 className='text-xl font-bold text-gray-900'>Perfis de Acesso</h3>
-                      <p className='text-sm text-gray-600 mt-1'>Gerenciar permissões e níveis de acesso</p>
-                    </div>
-                    <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
-                      <FiPlus size={18} /> Novo Perfil
-                    </button>
-                  </div>
-
-                  {/* Cards de Perfis */}
-                  <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-                    {perfis.map((perfil) => (
-                      <div key={perfil.id_perfil} className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
-                        <div className='flex justify-between items-start mb-4'>
-                          <div>
-                            <h3 className='text-xl font-bold text-gray-900'>{perfil.nome_perfil}</h3>
-                            <p className='text-sm text-gray-600 mt-1'>{perfil.descricao}</p>
-                          </div>
-                          <span className='px-3 py-1 bg-[#10E686]/20 text-[#10E686] rounded-lg text-xs font-semibold'>
-                            {perfil.status}
-                          </span>
-                        </div>
-
-                        <div className='mb-4'>
-                          <div className='flex items-center justify-between mb-2'>
-                            <p className='text-sm font-semibold text-gray-700'>Usuários</p>
-                            <p className='text-2xl font-bold text-[#237EE6]'>{perfil.total_usuarios}</p>
-                          </div>
-                          <div className='w-full bg-gray-200 rounded-full h-2'>
-                            <div
-                              className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
-                              style={{ width: `${(perfil.total_usuarios / 322) * 100}%` }}
-                            ></div>
-                          </div>
-                        </div>
-
-                        <div className='mb-4'>
-                          <p className='text-xs font-semibold text-gray-700 mb-2'>Permissões:</p>
-                          <div className='flex flex-wrap gap-2'>
-                            {perfil.permissoes.map((permissao, idx) => (
-                              <span key={idx} className='text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded'>
-                                {permissao.replace('_', ' ')}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className='flex gap-2'>
-                          <button className='flex-1 bg-[#237EE6] hover:bg-[#154c8b] text-white font-semibold py-2 rounded-lg transition-colors text-sm'>
-                            Editar
-                          </button>
-                          <button className='flex-1 bg-gray-100 hover:bg-gray-200 text-gray-900 font-semibold py-2 rounded-lg transition-colors text-sm'>
-                            Ver Usuários
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Detalhes de Permissões */}
-                  <div className='bg-white rounded-2xl shadow-md p-8'>
-                    <h3 className='text-2xl font-bold text-gray-900 mb-6'>Matriz de Permissões</h3>
-                    <div className='overflow-x-auto'>
-                      <table className='w-full'>
-                        <thead>
-                          <tr className='border-b-2 border-gray-200'>
-                            <th className='px-6 py-3 text-left text-sm font-semibold text-gray-900'>Permissão</th>
-                            {perfis.map((perfil) => (
-                              <th key={perfil.id_perfil} className='px-4 py-3 text-center text-sm font-semibold text-gray-900'>
-                                {perfil.nome_perfil}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {['criar', 'editar', 'excluir', 'visualizar', 'gerenciar_usuarios', 'gerenciar_estagios', 'gerenciar_alunos', 'validar_frequencia', 'avaliar_alunos', 'gerenciar_turmas', 'registrar_frequencia', 'upload_documentos', 'gerenciar_lgpd', 'exportar_dados', 'excluir_dados', 'configurar_sistema'].map((permissao) => (
-                            <tr key={permissao} className='border-b border-gray-200 hover:bg-[#F5F7FA]'>
-                              <td className='px-6 py-4 text-sm font-semibold text-gray-900'>{permissao.replace('_', ' ')}</td>
-                              {perfis.map((perfil) => (
-                                <td key={perfil.id_perfil} className='px-4 py-4 text-center'>
-                                  {perfil.permissoes.includes(permissao) ? (
-                                    <span className='text-[#10E686] font-bold text-lg'>✓</span>
-                                  ) : (
-                                    <span className='text-gray-300 font-bold text-lg'>—</span>
-                                  )}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* ATRIBUIR FUNÇÕES */}
-              {abaUsuarios === 'atribuir' && (
-                <div className='space-y-6'>
-                  <div>
-                    <h3 className='text-xl font-bold text-gray-900'>Atribuir Funções aos Usuários</h3>
-                    <p className='text-sm text-gray-600 mt-1'>Selecione um perfil e gerencie os usuários atribuídos</p>
-                  </div>
-
-                  {/* Seletor de Perfil */}
-                  <div className='bg-white rounded-2xl shadow-md p-6'>
-                    <label className='block text-sm font-semibold text-gray-700 mb-3'>Selecione o Perfil/Função</label>
-                    <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
-                      {perfis.map((perfil) => (
-                        <button
-                          key={perfil.id_perfil}
-                          onClick={() => setPerfilSelecionado(perfil)}
-                          className={`p-4 rounded-xl border-2 transition-all duration-300 ${
-                            perfilSelecionado?.id_perfil === perfil.id_perfil
-                              ? 'border-[#237EE6] bg-blue-50'
-                              : 'border-gray-200 hover:border-gray-300 bg-white'
-                          }`}
-                        >
-                          <div className='text-center'>
-                            <p className={`text-sm font-bold ${
-                              perfilSelecionado?.id_perfil === perfil.id_perfil ? 'text-[#237EE6]' : 'text-gray-900'
-                            }`}>
-                              {perfil.nome_perfil}
-                            </p>
-                            <p className='text-xs text-gray-600 mt-1'>{perfil.total_usuarios} usuários</p>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Conteúdo quando um perfil é selecionado */}
-                  {perfilSelecionado && (
-                    <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-                      {/* Usuários com este perfil */}
-                      <div className='bg-white rounded-2xl shadow-md p-6'>
-                        <div className='flex items-center justify-between mb-4'>
-                          <h4 className='text-lg font-bold text-gray-900'>
-                            Usuários com perfil "{perfilSelecionado.nome_perfil}"
-                          </h4>
-                          <span className='px-3 py-1 bg-[#237EE6] text-white rounded-lg text-sm font-semibold'>
-                            {usuarios.filter(u => u.id_perfil === perfilSelecionado.id_perfil).length}
-                          </span>
-                        </div>
-                        <div className='space-y-2 max-h-[600px] overflow-y-auto'>
-                          {usuarios.filter(u => u.id_perfil === perfilSelecionado.id_perfil).length === 0 ? (
-                            <div className='text-center py-8 text-gray-500'>
-                              <p className='text-sm'>Nenhum usuário com este perfil</p>
-                            </div>
-                          ) : (
-                            usuarios.filter(u => u.id_perfil === perfilSelecionado.id_perfil).map((usuario) => (
-                              <div key={usuario.id_usuario} className='flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg hover:border-[#237EE6] transition-all'>
-                                <div className='flex-1'>
-                                  <p className='text-sm font-semibold text-gray-900'>{usuario.nome}</p>
-                                  <p className='text-xs text-gray-600'>{usuario.email}</p>
-                                  <div className='flex items-center gap-2 mt-1'>
-                                    <span className='text-xs text-[#237EE6] font-semibold'>{usuario.instituicao}</span>
-                                    <span className='text-xs text-gray-500'>• {usuario.unidade}</span>
-                                  </div>
-                                </div>
-                                <button 
-                                  onClick={() => alert(`Remover ${usuario.nome} do perfil ${perfilSelecionado.nome_perfil}?`)}
-                                  className='ml-3 px-3 py-1 bg-red-100 text-red-700 rounded-lg text-xs font-semibold hover:bg-red-200 transition-colors'
-                                >
-                                  Remover
-                                </button>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Adicionar usuários ao perfil */}
-                      <div className='bg-white rounded-2xl shadow-md p-6'>
-                        <h4 className='text-lg font-bold text-gray-900 mb-4'>
-                          Adicionar Usuários ao Perfil
-                        </h4>
-                        
-                        {/* Busca de usuários */}
-                        <div className='mb-4'>
-                          <input
-                            type='text'
-                            placeholder='Buscar usuário por nome, CPF ou email...'
-                            className='w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#237EE6] focus:outline-none text-sm'
-                          />
-                        </div>
-
-                        {/* Lista de usuários disponíveis */}
-                        <div className='space-y-2 max-h-[520px] overflow-y-auto'>
-                          <p className='text-xs text-gray-600 mb-3'>Usuários disponíveis (outros perfis)</p>
-                          {usuarios.filter(u => u.id_perfil !== perfilSelecionado.id_perfil).length === 0 ? (
-                            <div className='text-center py-8 text-gray-500'>
-                              <p className='text-sm'>Todos os usuários já possuem este perfil</p>
-                            </div>
-                          ) : (
-                            usuarios.filter(u => u.id_perfil !== perfilSelecionado.id_perfil).map((usuario) => (
-                              <div key={usuario.id_usuario} className='flex items-center justify-between p-3 border-2 border-gray-200 rounded-lg hover:border-green-300 transition-all'>
-                                <div className='flex-1'>
-                                  <p className='text-sm font-semibold text-gray-900'>{usuario.nome}</p>
-                                  <p className='text-xs text-gray-600'>{usuario.email}</p>
-                                  <div className='flex items-center gap-2 mt-1'>
-                                    <span className={`text-xs px-2 py-0.5 rounded font-semibold ${
-                                      usuario.perfil === 'Administrador' ? 'bg-purple-100 text-purple-700' :
-                                      usuario.perfil === 'Coordenador' ? 'bg-blue-100 text-blue-700' :
-                                      usuario.perfil === 'Preceptor' ? 'bg-green-100 text-green-700' :
-                                      usuario.perfil === 'Docente' ? 'bg-yellow-100 text-yellow-700' :
-                                      usuario.perfil === 'LGPD' ? 'bg-red-100 text-red-700' :
-                                      'bg-gray-100 text-gray-700'
-                                    }`}>
-                                      {usuario.perfil}
-                                    </span>
-                                    <span className='text-xs text-gray-500'>• {usuario.instituicao}</span>
-                                  </div>
-                                </div>
-                                <button 
-                                  onClick={() => alert(`Atribuir perfil ${perfilSelecionado.nome_perfil} para ${usuario.nome}?`)}
-                                  className='ml-3 px-3 py-1 bg-[#10E686] text-white rounded-lg text-xs font-semibold hover:bg-[#0bc970] transition-colors'
-                                >
-                                  Atribuir
-                                </button>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Mensagem quando nenhum perfil está selecionado */}
-                  {!perfilSelecionado && (
-                    <div className='bg-white rounded-2xl shadow-md p-12 text-center'>
-                      <FiSettings size={48} className='mx-auto text-gray-300 mb-4' />
-                      <p className='text-gray-600 text-lg font-semibold mb-2'>Selecione um Perfil</p>
-                      <p className='text-gray-500 text-sm'>Escolha um perfil acima para visualizar e gerenciar os usuários atribuídos</p>
-                    </div>
-                  )}
-
-                  {/* Resumo de atribuições */}
-                  <div className='bg-white rounded-2xl shadow-md p-6'>
-                    <h4 className='text-lg font-bold text-gray-900 mb-4'>Resumo de Atribuições</h4>
-                    <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4'>
-                      {perfis.map((perfil) => {
-                        const count = usuarios.filter(u => u.id_perfil === perfil.id_perfil).length
-                        return (
-                          <div key={perfil.id_perfil} className='p-4 bg-gradient-to-br from-[#F5F7FA] to-white border-2 border-gray-200 rounded-xl text-center'>
-                            <p className='text-xs text-gray-600 mb-2'>{perfil.nome_perfil}</p>
-                            <p className='text-3xl font-bold text-[#237EE6]'>{count}</p>
-                            <div className='mt-2 w-full bg-gray-200 rounded-full h-1.5'>
-                              <div
-                                className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-1.5 rounded-full'
-                                style={{ width: `${(count / usuarios.length) * 100}%` }}
-                              ></div>
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            <UsuariosAdm 
+              abaUsuarios={abaUsuarios}
+              setAbaUsuarios={setAbaUsuarios}
+              usuarios={usuarios}
+              perfis={perfis}
+              perfilSelecionado={perfilSelecionado}
+              setPerfilSelecionado={setPerfilSelecionado}
+            />
           )}
         </div>
       </div>
@@ -2468,7 +1513,7 @@ export default function DashboardAdm() {
         <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto'>
             {/* Header */}
-            <div className='sticky top-0 bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white p-6 flex items-center justify-between'>
+            <div className='sticky top-0 bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white p-6 flex items-center justify-between'>
               <div>
                 <h2 className='text-2xl font-bold'>Adicionar Preceptor</h2>
                 <p className='text-sm opacity-90 mt-1'>Local: {localSelecionadoParaPreceptor.nome}</p>
@@ -2590,7 +1635,7 @@ export default function DashboardAdm() {
         <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto'>
             {/* Header */}
-            <div className='sticky top-0 bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white p-6 flex items-center justify-between'>
+            <div className='sticky top-0 bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white p-6 flex items-center justify-between'>
               <div>
                 <h2 className='text-2xl font-bold'>Gerenciar Especialidades</h2>
                 <p className='text-sm opacity-90 mt-1'>Local: {localSelecionadoParaEspecialidades.nome}</p>
@@ -2667,7 +1712,7 @@ export default function DashboardAdm() {
 
               {/* Resumo de Seleção */}
               {especialidadesSelecionadas.length > 0 && (
-                <div className='bg-gradient-to-r from-[#10E686]/10 to-[#60E6D7]/10 border-2 border-[#10E686] rounded-lg p-4 mb-6'>
+                <div className='bg-linear-to-r from-[#10E686]/10 to-[#60E6D7]/10 border-2 border-[#10E686] rounded-lg p-4 mb-6'>
                   <p className='text-sm font-semibold text-gray-900 mb-3'>
                     {especialidadesSelecionadas.length} especialidade{especialidadesSelecionadas.length !== 1 ? 's' : ''} selecionada{especialidadesSelecionadas.length !== 1 ? 's' : ''}:
                   </p>
@@ -2732,7 +1777,7 @@ export default function DashboardAdm() {
         <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-lg w-full'>
             {/* Header */}
-            <div className='bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white p-6 flex items-center justify-between'>
+            <div className='bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white p-6 flex items-center justify-between'>
               <h2 className='text-2xl font-bold'>Nova Especialidade</h2>
               <button
                 onClick={() => {
@@ -2784,7 +1829,7 @@ export default function DashboardAdm() {
 
               {/* Preview */}
               {novaEspecialidadeNome && novaEspecialidadeCodigo && (
-                <div className='bg-gradient-to-r from-[#10E686]/10 to-[#60E6D7]/10 border-2 border-[#10E686] rounded-lg p-4'>
+                <div className='bg-linear-to-r from-[#10E686]/10 to-[#60E6D7]/10 border-2 border-[#10E686] rounded-lg p-4'>
                   <p className='text-sm font-semibold text-gray-900 mb-2'>Preview:</p>
                   <div className='flex items-center gap-2'>
                     <FiStar className='text-[#10E686]' size={16} />
@@ -2833,6 +1878,7 @@ export default function DashboardAdm() {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }
