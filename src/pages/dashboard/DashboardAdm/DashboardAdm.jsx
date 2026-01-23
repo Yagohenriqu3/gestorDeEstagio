@@ -1129,7 +1129,7 @@ export default function DashboardAdm() {
         </div>
 
         {/* Tabs Mobile */}
-        <div className='px-6 lg:px-12 py-6'>
+        <div className='px-4 md:px-6 lg:px-12 py-4 md:py-6'>
         <div className='mb-6 border-b-2 border-gray-200 pb-4'>
           {/* Mobile: Botão Hambúrguer + Aba Atual */}
           <div className='md:hidden mb-4'>

@@ -29,9 +29,9 @@ export default function VisaoGeral({ aluno, vagas, setAbaSelecionada }) {
   }
 
   return (
-    <div className='space-y-8'>
+    <div className='space-y-6 md:space-y-8'>
       {/* Cards Informativos */}
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6'>
         {/* Card Frequência */}
         <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
           <div className='flex items-center justify-between mb-4'>
@@ -82,15 +82,15 @@ export default function VisaoGeral({ aluno, vagas, setAbaSelecionada }) {
             
             return (
               <div key={vaga.id} className='border-2 border-gray-200 rounded-xl hover:border-[#237EE6] transition-all duration-300'>
-                <div className='flex flex-col md:flex-row md:items-center md:justify-between p-4'>
+                <div className='flex flex-col md:flex-row md:items-center md:justify-between p-3 md:p-4'>
                   <div className='flex-1'>
                     <p className='font-semibold text-gray-900'>{vaga.especialidade}</p>
                     <p className='text-sm text-gray-600'>{vaga.local}</p>
                     <p className='text-sm text-gray-500 mt-1'>Prof. {vaga.preceptor} • {vaga.horario}</p>
                     <p className='text-xs text-gray-400 mt-1'>📅 {vaga.data_inicio} até {vaga.data_fim}</p>
                   </div>
-                  <div className='flex items-center gap-3 mt-4 md:mt-0'>
-                    <span className={`px-4 py-2 rounded-lg font-semibold text-sm ${
+                  <div className='flex items-center gap-2 md:gap-3 mt-3 md:mt-0'>
+                    <span className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-semibold text-xs md:text-sm whitespace-nowrap ${
                       vaga.status === 'Ativa'
                         ? 'bg-[#10E686]/20 text-[#10E686]'
                         : 'bg-yellow-100 text-yellow-700'
@@ -99,10 +99,10 @@ export default function VisaoGeral({ aluno, vagas, setAbaSelecionada }) {
                     </span>
                     <button 
                       onClick={() => toggleDetalhes(vaga.id)}
-                      className='px-4 py-2 bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'
+                      className='px-3 py-1.5 md:px-4 md:py-2 bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-1 md:gap-2 text-xs md:text-sm whitespace-nowrap'
                     >
                       Detalhes
-                      {isExpandida ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+                      {isExpandida ? <FiChevronUp size={14} /> : <FiChevronDown size={14} />}
                     </button>
                   </div>
                 </div>

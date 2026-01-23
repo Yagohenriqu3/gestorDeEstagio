@@ -4,7 +4,7 @@ const VisaoGeralPreceptor = ({ preceptor, vinculos, alunos, totalInstituicoes, i
   return (
     <div className='space-y-8'>
       {/* Cards Principais */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+      <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6'>
         {/* Card Alunos */}
         <div className='bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition-all duration-300'>
           <div className='flex items-center justify-between mb-4'>

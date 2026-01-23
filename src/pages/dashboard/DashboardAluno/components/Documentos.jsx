@@ -180,7 +180,7 @@ export default function Documentos() {
                       </div>
                     </div>
 
-                    <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2 whitespace-nowrap'>
+                    <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-4 md:px-6 py-2 md:py-3 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2 whitespace-nowrap text-sm md:text-base'>
                       <FiUpload size={18} />
                       Enviar Documento
                     </button>

@@ -31,16 +31,16 @@ export default function Locais({ locais }) {
   }
 
   return (
-    <div className='space-y-6'>
+    <div className='space-y-4 md:space-y-6'>
       <h2 className='text-3xl font-bold text-gray-900'>🏥 Locais de Estágio</h2>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6'>
         {locais.map((local) => {
           const detalhes = locaisDetalhes[local.nome]
           const isExpandido = localExpandido === local.id
 
           return (
             <div key={local.id} className='bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300'>
-              <div className='p-6'>
+              <div className='p-4 md:p-6'>
                 <div className='flex items-start justify-between mb-4'>
                   <div>
                     <p className='text-sm text-[#237EE6] font-semibold uppercase'>{local.tipo}</p>

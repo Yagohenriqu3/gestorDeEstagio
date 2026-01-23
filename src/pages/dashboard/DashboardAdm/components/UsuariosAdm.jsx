@@ -278,7 +278,8 @@ const UsuariosAdm = ({
           {/* Seletor de Perfil */}
           <div className='bg-white rounded-2xl shadow-md p-6'>
             <label className='block text-sm font-semibold text-gray-700 mb-3'>Selecione o Perfil/Função</label>
-            <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3'>
+            <div className='overflow-x-auto'>
+              <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 min-w-min'>
               {perfis.map((perfil) => (
                 <button
                   key={perfil.id_perfil}
@@ -299,6 +300,7 @@ const UsuariosAdm = ({
                   </div>
                 </button>
               ))}
+              </div>
             </div>
           </div>
 
@@ -411,7 +413,8 @@ const UsuariosAdm = ({
           {/* Resumo de atribuições */}
           <div className='bg-white rounded-2xl shadow-md p-6'>
             <h4 className='text-lg font-bold text-gray-900 mb-4'>Resumo de Atribuições</h4>
-            <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4'>
+            <div className='overflow-x-auto'>
+              <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 min-w-min'>
               {perfis.map((perfil) => {
                 const count = usuarios.filter(u => u.id_perfil === perfil.id_perfil).length
                 return (
@@ -427,6 +430,7 @@ const UsuariosAdm = ({
                   </div>
                 )
               })}
+              </div>
             </div>
           </div>
         </div>

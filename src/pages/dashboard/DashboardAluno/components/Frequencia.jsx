@@ -95,7 +95,7 @@ export default function Frequencia({ frequencia, estagios }) {
       
       {/* Resumo */}
       <div className='bg-white rounded-2xl shadow-md p-6'>
-        <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+        <div className='grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4'>
           <div>
             <p className='text-gray-600 text-sm'>Semana Atual</p>
             <p className='text-2xl font-bold text-[#237EE6] mt-1'>40h</p>
