@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FiUsers,  FiClipboard, FiFilter, FiMapPin, FiX} from 'react-icons/fi'
+import { FiUsers,  FiClipboard, FiFilter, FiMapPin, FiX, FiMenu} from 'react-icons/fi'
 import Sidebar from '../../../components/layout/Sidebar/Sidebar'
 import { menuPreceptor } from '../../../config/dashboardMenus'
 import VisaoGeralPreceptor from './components/VisaoGeralPreceptor'
@@ -11,6 +11,7 @@ import AvaliacoesPreceptor from './components/AvaliacoesPreceptor'
 export default function DashboardPreceptor() {
   const [abaSelecionada, setAbaSelecionada] = useState('overview')
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
+  const [menuMobileAberto, setMenuMobileAberto] = useState(false)
   const [filtroFrequencia, setFiltroFrequencia] = useState('pendentes')
   const [filtroData, setFiltroData] = useState('')
   const [filtroLocal, setFiltroLocal] = useState('todos')
@@ -273,7 +274,7 @@ export default function DashboardPreceptor() {
       />
       
       {/* Conteúdo Principal */}
-      <div className={`flex-1 transition-all duration-300 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
+      <div className={`flex-1 transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
         {/* Header */}
         <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white px-6 lg:px-12 py-10'>
         <div className='max-w-7xl mx-auto'>
@@ -293,6 +294,47 @@ export default function DashboardPreceptor() {
           </div>
         </div>
       </div>
+
+        {/* Menu Mobile */}
+        <div className='lg:hidden bg-white border-b border-gray-200 px-4 py-3'>
+          <button
+            onClick={() => setMenuMobileAberto(!menuMobileAberto)}
+            className='flex items-center gap-2 text-gray-700 hover:text-[#237EE6] transition-colors'
+          >
+            {menuMobileAberto ? <FiX size={24} /> : <FiMenu size={24} />}
+            <span className='font-semibold'>Menu</span>
+          </button>
+
+          {/* Dropdown Menu Mobile */}
+          {menuMobileAberto && (
+            <div className='mt-4 space-y-4 animate-fadeIn'>
+              {menuPreceptor.map((secao) => (
+                <div key={secao.categoria}>
+                  <p className='text-xs font-semibold text-gray-500 uppercase mb-2'>{secao.categoria}</p>
+                  <div className='space-y-2'>
+                    {secao.items.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          setAbaSelecionada(item.id)
+                          setMenuMobileAberto(false)
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
+                          abaSelecionada === item.id
+                            ? 'bg-[#237EE6] text-white'
+                            : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                        }`}
+                      >
+                        <item.icone size={20} />
+                        <span className='font-medium'>{item.nome}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
       {/* Conteúdo */}
       <div className='max-w-7xl mx-auto px-6 lg:px-12 py-10'>

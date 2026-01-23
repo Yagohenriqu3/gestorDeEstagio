@@ -1121,7 +1121,7 @@ export default function DashboardAdm() {
       />
       
       {/* Conteúdo Principal */}
-      <div className={`flex-1 transition-all duration-300 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
+      <div className={`flex-1 transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
         {/* Header */}
         <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white px-6 lg:px-12 py-10'>
           <h1 className='text-4xl font-bold'>Dashboard Administrativo</h1>
