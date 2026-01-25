@@ -90,7 +90,7 @@ export default function SemestreOfertasAdm({ ofertas = [] }) {
           <button className='bg-white border-2 border-[#10E686] text-[#10E686] font-semibold px-6 py-2 rounded-lg hover:bg-[#F5F7FA] transition-all flex items-center gap-2'>
             <FiPlus size={18} /> Novo Semestre
           </button>
-          <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'>
+          <button className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'>
             <FiPlus size={18} /> Nova Oferta
           </button>
         </div>
@@ -138,7 +138,7 @@ export default function SemestreOfertasAdm({ ofertas = [] }) {
           </div>
           <div className='text-2xl font-bold text-gray-900'>{resumoHorasOfertadas}h / {resumoHorasExigidas}h</div>
           <div className='w-full bg-gray-100 rounded-full h-2'>
-            <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${percent(resumoHorasOfertadas, resumoHorasExigidas)}%` }}></div>
+            <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${percent(resumoHorasOfertadas, resumoHorasExigidas)}%` }}></div>
           </div>
           <p className='text-xs text-gray-600'>Horas práticas ofertadas x exigidas pelo currículo</p>
         </div>
@@ -150,7 +150,7 @@ export default function SemestreOfertasAdm({ ofertas = [] }) {
           </div>
           <div className='text-2xl font-bold text-gray-900'>{resumoAlunosAlocados}/{resumoAlunosPrevistos}</div>
           <div className='w-full bg-gray-100 rounded-full h-2'>
-            <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${percent(resumoAlunosAlocados, resumoAlunosPrevistos)}%` }}></div>
+            <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${percent(resumoAlunosAlocados, resumoAlunosPrevistos)}%` }}></div>
           </div>
           <p className='text-xs text-gray-600'>Pendentes: {resumoAlunosPendentes}</p>
         </div>
@@ -227,14 +227,14 @@ export default function SemestreOfertasAdm({ ofertas = [] }) {
                 <p className='text-xs text-gray-500'>Horas práticas</p>
                 <p className='text-lg font-bold text-gray-900'>{oferta.horas_praticas_ofertadas}h / {oferta.horas_praticas_exigidas}h</p>
                 <div className='w-full bg-gray-200 rounded-full h-2 mt-2'>
-                  <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${horasPerc}%` }}></div>
+                  <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${horasPerc}%` }}></div>
                 </div>
               </div>
               <div className='border rounded-xl p-3 bg-[#F8FAFC]'>
                 <p className='text-xs text-gray-500'>Alocação</p>
                 <p className='text-lg font-bold text-gray-900'>{oferta.alunos_alocados}/{oferta.total_alunos_previstos}</p>
                 <div className='w-full bg-gray-200 rounded-full h-2 mt-2'>
-                  <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${alocPerc}%` }}></div>
+                  <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${alocPerc}%` }}></div>
                 </div>
                 <p className='text-xs text-gray-600 mt-1'>Pendentes: {oferta.alunos_pendentes}</p>
               </div>
@@ -287,7 +287,7 @@ export default function SemestreOfertasAdm({ ofertas = [] }) {
                           <span className='font-semibold'>{rodizio.vagas_ocupadas}/{rodizio.vagas_total}</span>
                         </div>
                         <div className='w-full bg-gray-200 rounded-full h-2'>
-                          <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${ocupacao}%` }}></div>
+                          <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${ocupacao}%` }}></div>
                         </div>
                       </div>
 
@@ -402,7 +402,7 @@ export default function SemestreOfertasAdm({ ofertas = [] }) {
       }))}
 
       {/* Informações sobre Controle de Ofertas */}
-      <div className='bg-linear-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6'>
+      <div className='bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6'>
         <h4 className='font-bold text-gray-900 text-lg mb-3 flex items-center gap-2'>
           <FiCheckCircle size={20} className='text-blue-600' />
           O que é Controle de Oferta de Estágio?

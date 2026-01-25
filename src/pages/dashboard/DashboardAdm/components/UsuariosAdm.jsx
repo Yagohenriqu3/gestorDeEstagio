@@ -13,37 +13,37 @@ const UsuariosAdm = ({
       <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'><FiSettings size={32} /> Gestão de Usuários e Perfis</h2>
 
       {/* Sub-abas */}
-      <div className='overflow-x-auto whitespace-nowrap -mx-2 px-2'>
-        <div className='flex gap-2 md:flex-wrap'>
+      <div>
+        <div className='flex flex-wrap gap-2'>
           <button
             onClick={() => setAbaUsuarios('lista')}
-            className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
+            className={`shrink-0 px-2 py-2 md:px-4 md:py-2 text-xs md:text-base rounded-lg font-semibold transition-all flex items-center gap-1 md:gap-2 ${
               abaUsuarios === 'lista'
                 ? 'bg-[#237EE6] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            <FiUsers size={18} /> Lista de Usuários
+            <FiUsers className='text-sm md:text-base' /> <span className='whitespace-nowrap'>Lista de Usuários</span>
           </button>
           <button
             onClick={() => setAbaUsuarios('perfis')}
-            className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
+            className={`shrink-0 px-2 py-2 md:px-4 md:py-2 text-xs md:text-base rounded-lg font-semibold transition-all flex items-center gap-1 md:gap-2 ${
               abaUsuarios === 'perfis'
                 ? 'bg-[#237EE6] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            <FiSettings size={18} /> Perfis de Acesso
+            <FiSettings className='text-sm md:text-base' /> <span className='whitespace-nowrap'>Perfis de Acesso</span>
           </button>
           <button
             onClick={() => setAbaUsuarios('atribuir')}
-            className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
+            className={`shrink-0 px-2 py-2 md:px-4 md:py-2 text-xs md:text-base rounded-lg font-semibold transition-all flex items-center gap-1 md:gap-2 ${
               abaUsuarios === 'atribuir'
                 ? 'bg-[#237EE6] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            <FiClipboard size={18} /> Atribuir Funções
+            <FiClipboard className='text-sm md:text-base' /> <span className='whitespace-nowrap'>Atribuir Funções</span>
           </button>
         </div>
       </div>
@@ -56,7 +56,7 @@ const UsuariosAdm = ({
               <h3 className='text-xl font-bold text-gray-900'>Usuários Cadastrados</h3>
               <p className='text-sm text-gray-600 mt-1'>Total: {usuarios.length} usuários ativos</p>
             </div>
-            <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
+            <button className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
               <FiPlus size={18} /> Novo Usuário
             </button>
           </div>

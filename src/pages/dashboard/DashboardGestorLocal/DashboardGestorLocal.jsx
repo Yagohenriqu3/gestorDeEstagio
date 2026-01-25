@@ -200,7 +200,7 @@ export default function DashboardGestorLocal() {
   const preceptoresAtivos = preceptores.filter(p => p.status === 'Ativo' && (!instituicaoSelecionada || p.instituicao === instituicaoSelecionada))
 
   return (
-    <div className='flex w-full min-h-screen bg-linear-to-br from-[#F5F7FA] to-white overflow-x-hidden'>
+    <div className='flex w-full min-h-screen bg-gradient-to-br from-[#F5F7FA] to-white overflow-x-hidden'>
       {/* Sidebar Desktop */}
       <Sidebar 
         abaSelecionada={abaSelecionada} 
@@ -212,7 +212,7 @@ export default function DashboardGestorLocal() {
       />
       
       {/* Conteúdo Principal */}
-      <div className={`flex-1 transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
+      <div className={`flex-1 w-full overflow-x-hidden transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
         {/* Modal de Seleção de Instituição */}
         {modalInstituicao && (
         <div className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4'>
@@ -228,7 +228,7 @@ export default function DashboardGestorLocal() {
                     setInstituicaoSelecionada(inst.sigla)
                     setModalInstituicao(false)
                   }}
-                  className='bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 hover:border-[#237EE6] rounded-2xl p-6 transition-all duration-300 hover:shadow-lg group'
+                  className='bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 hover:border-[#237EE6] rounded-2xl p-6 transition-all duration-300 hover:shadow-lg group'
                 >
                   <div className='text-5xl mb-3 group-hover:scale-110 transition-transform duration-300'>{inst.logo}</div>
                   <h3 className='text-xl font-bold text-gray-900 mb-2'>{inst.nome}</h3>
@@ -254,7 +254,7 @@ export default function DashboardGestorLocal() {
       )}
 
       {/* Header */}
-      <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white px-6 lg:px-12 py-10'>
+      <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white px-6 lg:px-12 py-10'>
         <div className='max-w-7xl mx-auto'>
           <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
             <div>
@@ -563,4 +563,5 @@ export default function DashboardGestorLocal() {
     </div>
   )
 }
+
 

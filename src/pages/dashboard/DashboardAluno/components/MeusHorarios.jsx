@@ -7,7 +7,7 @@ export default function MeusHorarios({ vagas }) {
       <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
         <div className='p-4 md:p-6'>
           <h3 className='text-lg md:text-xl font-semibold text-gray-900 mb-4 md:mb-6'>Grade Semanal</h3>
-          <div className='overflow-x-auto -mx-4 md:mx-0 px-4 md:px-0'>
+          <div className='w-full overflow-x-auto'>
             <table className='w-full border-collapse min-w-[800px]'>
               <thead>
                 <tr className='bg-linear-to-r from-[#237EE6] to-[#60C9E6]'>

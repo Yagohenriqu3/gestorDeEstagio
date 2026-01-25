@@ -630,7 +630,7 @@ export default function DashboardCoordenador() {
   })
 
   return (
-    <div className='flex w-full min-h-screen bg-linear-to-br from-[#F5F7FA] to-white overflow-x-hidden'>
+    <div className='flex w-full min-h-screen bg-gradient-to-br from-[#F5F7FA] to-white overflow-x-hidden'>
       {/* Sidebar Desktop */}
       <Sidebar 
         abaSelecionada={abaSelecionada} 
@@ -642,7 +642,7 @@ export default function DashboardCoordenador() {
       />
       
       {/* Conteúdo Principal */}
-      <div className={`flex-1 transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
+      <div className={`flex-1 w-full overflow-x-hidden transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
         {/* Header */}
         <HeaderCoordenador instituicao={instituicao} />
 
@@ -763,7 +763,7 @@ export default function DashboardCoordenador() {
               <div className='space-y-6'>
                 <div className='flex justify-between items-center'>
                   <h2 className='text-3xl font-bold text-gray-900'>Disponibilidade de Preceptores</h2>
-                  <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
+                  <button className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
                     <FiPlus size={18} /> Nova Disponibilidade
                   </button>
                 </div>
@@ -795,7 +795,7 @@ export default function DashboardCoordenador() {
                               <div className='flex items-center gap-2'>
                                 <div className='w-16 bg-gray-200 rounded-full h-2'>
                                   <div
-                                    className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
+                                    className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
                                     style={{ width: `${(disp.alunos_alocados / disp.capacidade_alunos) * 100}%` }}
                                   ></div>
                                 </div>
@@ -839,11 +839,11 @@ export default function DashboardCoordenador() {
                 </select>
                 <button 
                   onClick={() => setModalCriarEspecialidade(true)}
-                  className='bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'
+                  className='bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'
                 >
                   <FiStar size={18} /> Nova Especialidade
                 </button>
-                <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
+                <button className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
                   <FiPlus size={18} /> Novo Local
                 </button>
               </div>
@@ -984,7 +984,7 @@ export default function DashboardCoordenador() {
                   {Object.entries(locaisComEspecialidades).map(([localId, especialidades]) => {
                     const local = locais.find(l => l.id === parseInt(localId))
                     return (
-                      <div key={localId} className='border-2 border-[#10E686]/30 rounded-xl p-4 bg-linear-to-br from-[#10E686]/5 to-[#60E6D7]/5'>
+                      <div key={localId} className='border-2 border-[#10E686]/30 rounded-xl p-4 bg-gradient-to-br from-[#10E686]/5 to-[#60E6D7]/5'>
                         <div className='flex items-center justify-between mb-4'>
                           <h4 className='text-lg font-semibold text-gray-900'>{local?.nome}</h4>
                           <span className='px-3 py-1 bg-[#10E686]/20 text-[#10E686] rounded-lg text-xs font-semibold'>
@@ -1016,7 +1016,7 @@ export default function DashboardCoordenador() {
           <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
             <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto'>
               {/* Header */}
-              <div className='sticky top-0 bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white p-6 flex items-center justify-between'>
+              <div className='sticky top-0 bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white p-6 flex items-center justify-between'>
                 <div>
                   <h2 className='text-2xl font-bold'>Adicionar Preceptor</h2>
                   <p className='text-sm opacity-90 mt-1'>Local: {localSelecionadoParaPreceptor.nome}</p>
@@ -1124,7 +1124,7 @@ export default function DashboardCoordenador() {
                     }
                   }}
                   disabled={preceptoresSelecionados.length === 0}
-                  className='px-6 py-2 bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
+                  className='px-6 py-2 bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
                 >
                   <FiCheck size={18} /> Adicionar {preceptoresSelecionados.length > 0 ? preceptoresSelecionados.length : ''}
                 </button>
@@ -1138,7 +1138,7 @@ export default function DashboardCoordenador() {
           <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
             <div className='bg-white rounded-2xl shadow-2xl max-w-lg w-full'>
               {/* Header */}
-              <div className='bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white p-6 flex items-center justify-between'>
+              <div className='bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white p-6 flex items-center justify-between'>
                 <h2 className='text-2xl font-bold'>Nova Especialidade</h2>
                 <button
                   onClick={() => {
@@ -1190,7 +1190,7 @@ export default function DashboardCoordenador() {
 
                 {/* Preview */}
                 {novaEspecialidadeNome && novaEspecialidadeCodigo && (
-                  <div className='bg-linear-to-r from-[#10E686]/10 to-[#60E6D7]/10 border-2 border-[#10E686] rounded-lg p-4'>
+                  <div className='bg-gradient-to-r from-[#10E686]/10 to-[#60E6D7]/10 border-2 border-[#10E686] rounded-lg p-4'>
                     <p className='text-sm font-semibold text-gray-900 mb-2'>Preview:</p>
                     <div className='flex items-center gap-2'>
                       <FiStar className='text-[#10E686]' size={16} />
@@ -1231,7 +1231,7 @@ export default function DashboardCoordenador() {
                     }
                   }}
                   disabled={!novaEspecialidadeNome || !novaEspecialidadeCodigo}
-                  className='px-6 py-2 bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
+                  className='px-6 py-2 bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
                 >
                   <FiCheck size={18} /> Criar Especialidade
                 </button>
@@ -1245,7 +1245,7 @@ export default function DashboardCoordenador() {
           <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
             <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto'>
               {/* Header */}
-              <div className='sticky top-0 bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white p-6 flex items-center justify-between'>
+              <div className='sticky top-0 bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white p-6 flex items-center justify-between'>
                 <div>
                   <h2 className='text-2xl font-bold'>Gerenciar Especialidades</h2>
                   <p className='text-sm opacity-90 mt-1'>Local: {localSelecionadoParaEspecialidades.nome}</p>
@@ -1322,7 +1322,7 @@ export default function DashboardCoordenador() {
 
                 {/* Resumo de Seleção */}
                 {especialidadesSelecionadas.length > 0 && (
-                  <div className='bg-linear-to-r from-[#10E686]/10 to-[#60E6D7]/10 border-2 border-[#10E686] rounded-lg p-4 mb-6'>
+                  <div className='bg-gradient-to-r from-[#10E686]/10 to-[#60E6D7]/10 border-2 border-[#10E686] rounded-lg p-4 mb-6'>
                     <p className='text-sm font-semibold text-gray-900 mb-3'>
                       {especialidadesSelecionadas.length} especialidade{especialidadesSelecionadas.length !== 1 ? 's' : ''} selecionada{especialidadesSelecionadas.length !== 1 ? 's' : ''}:
                     </p>
@@ -1373,7 +1373,7 @@ export default function DashboardCoordenador() {
                     setLocalSelecionadoParaEspecialidades(null)
                     setEspecialidadesSelecionadas([])
                   }}
-                  className='px-6 py-2 bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'
+                  className='px-6 py-2 bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'
                 >
                   <FiCheck size={18} /> Salvar {especialidadesSelecionadas.length > 0 ? `(${especialidadesSelecionadas.length})` : ''}
                 </button>
@@ -1444,7 +1444,7 @@ export default function DashboardCoordenador() {
                           <div className='flex items-center gap-2'>
                             <div className='w-24 bg-gray-200 rounded-full h-2'>
                               <div
-                                className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
+                                className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
                                 style={{ width: `${aluno.frequencia}%` }}
                               ></div>
                             </div>
@@ -1495,7 +1495,7 @@ export default function DashboardCoordenador() {
                             <div className='flex items-center gap-2'>
                               <div className='w-24 bg-gray-200 rounded-full h-2'>
                                 <div
-                                  className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
+                                  className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
                                   style={{ width: `${frequenciaLocal}%` }}
                                 ></div>
                               </div>
@@ -1552,37 +1552,37 @@ export default function DashboardCoordenador() {
                       <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'><FiSettings size={32} /> Gestão de Usuários e Perfis</h2>
         
                       {/* Sub-abas */}
-                      <div className='overflow-x-auto whitespace-nowrap -mx-2 px-2'>
-                        <div className='flex gap-2 md:flex-wrap'>
+                      <div>
+                        <div className='flex flex-wrap gap-2'>
                           <button
                             onClick={() => setAbaUsuarios('lista')}
-                            className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                            className={`shrink-0 px-2 py-2 md:px-4 md:py-2 text-xs md:text-base rounded-lg font-semibold transition-all flex items-center gap-1 md:gap-2 ${
                               abaUsuarios === 'lista'
                                 ? 'bg-[#237EE6] text-white'
                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             }`}
                           >
-                            <FiUsers size={18} /> Lista de Usuários
+                            <FiUsers className='text-sm md:text-base' /> <span className='whitespace-nowrap'>Lista de Usuários</span>
                           </button>
                           <button
                             onClick={() => setAbaUsuarios('perfis')}
-                            className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                            className={`shrink-0 px-2 py-2 md:px-4 md:py-2 text-xs md:text-base rounded-lg font-semibold transition-all flex items-center gap-1 md:gap-2 ${
                               abaUsuarios === 'perfis'
                                 ? 'bg-[#237EE6] text-white'
                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             }`}
                           >
-                            <FiSettings size={18} /> Perfis de Acesso
+                            <FiSettings className='text-sm md:text-base' /> <span className='whitespace-nowrap'>Perfis de Acesso</span>
                           </button>
                           <button
                             onClick={() => setAbaUsuarios('atribuir')}
-                            className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                            className={`shrink-0 px-2 py-2 md:px-4 md:py-2 text-xs md:text-base rounded-lg font-semibold transition-all flex items-center gap-1 md:gap-2 ${
                               abaUsuarios === 'atribuir'
                                 ? 'bg-[#237EE6] text-white'
                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                             }`}
                           >
-                            <FiClipboard size={18} /> Atribuir Funções
+                            <FiClipboard className='text-sm md:text-base' /> <span className='whitespace-nowrap'>Atribuir Funções</span>
                           </button>
                         </div>
                       </div>
@@ -1595,7 +1595,7 @@ export default function DashboardCoordenador() {
                               <h3 className='text-xl font-bold text-gray-900'>Usuários Cadastrados</h3>
                               <p className='text-sm text-gray-600 mt-1'>Total: {usuarios.length} usuários ativos</p>
                             </div>
-                            <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
+                            <button className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
                               <FiPlus size={18} /> Novo Usuário
                             </button>
                           </div>
@@ -1714,7 +1714,7 @@ export default function DashboardCoordenador() {
                               <h3 className='text-xl font-bold text-gray-900'>Perfis de Acesso</h3>
                               <p className='text-sm text-gray-600 mt-1'>Gerenciar permissões e níveis de acesso</p>
                             </div>
-                            <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
+                            <button className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
                               <FiPlus size={18} /> Novo Perfil
                             </button>
                           </div>
@@ -1740,7 +1740,7 @@ export default function DashboardCoordenador() {
                                   </div>
                                   <div className='w-full bg-gray-200 rounded-full h-2'>
                                     <div
-                                      className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
+                                      className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
                                       style={{ width: `${(perfil.total_usuarios / 322) * 100}%` }}
                                     ></div>
                                   </div>
@@ -1962,14 +1962,14 @@ export default function DashboardCoordenador() {
                                 return (
                                   <div key={perfil.id_perfil} className={`p-4 rounded-xl text-center ${
                                     podeAtribuir 
-                                      ? 'bg-linear-to-br from-[#F5F7FA] to-white border-2 border-gray-200' 
+                                      ? 'bg-gradient-to-br from-[#F5F7FA] to-white border-2 border-gray-200' 
                                       : 'bg-gray-100 border-2 border-gray-300 opacity-60'
                                   }`}>
                                     <p className='text-xs text-gray-600 mb-2'>{perfil.nome_perfil}</p>
                                     <p className='text-3xl font-bold text-[#237EE6]'>{count}</p>
                                     <div className='mt-2 w-full bg-gray-200 rounded-full h-1.5'>
                                       <div
-                                        className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-1.5 rounded-full'
+                                        className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-1.5 rounded-full'
                                         style={{ width: `${(count / usuarios.length) * 100}%` }}
                                       ></div>
                                     </div>
@@ -1991,4 +1991,5 @@ export default function DashboardCoordenador() {
     </div>
   )
 }
+
 

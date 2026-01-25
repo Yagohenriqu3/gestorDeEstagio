@@ -90,11 +90,11 @@ export default function Frequencia({ frequencia, estagios }) {
   }
 
   return (
-    <div className='space-y-6'>
-      <h2 className='text-3xl font-bold text-gray-900'>✅ Minha Frequência</h2>
+    <div className='space-y-4 md:space-y-6'>
+      <h2 className='text-2xl md:text-3xl font-bold text-gray-900'>✅ Minha Frequência</h2>
       
       {/* Resumo */}
-      <div className='bg-white rounded-2xl shadow-md p-6'>
+      <div className='bg-white rounded-2xl shadow-md p-4 md:p-6'>
         <div className='grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4'>
           <div>
             <p className='text-gray-600 text-sm'>Semana Atual</p>
@@ -118,25 +118,25 @@ export default function Frequencia({ frequencia, estagios }) {
       {/* Tabela de Frequência */}
       <div className='bg-white rounded-2xl shadow-md overflow-hidden'>
         <div className='overflow-x-auto'>
-          <table className='w-full'>
+          <table className='w-full min-w-[600px]'>
             <thead>
               <tr className='border-b-2 border-gray-200'>
-                <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Data</th>
-                <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Entrada</th>
-                <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Saída</th>
-                <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Total</th>
-                <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>Status</th>
+                <th className='px-3 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-gray-900'>Data</th>
+                <th className='px-3 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-gray-900'>Entrada</th>
+                <th className='px-3 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-gray-900'>Saída</th>
+                <th className='px-3 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-gray-900'>Total</th>
+                <th className='px-3 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-gray-900'>Status</th>
               </tr>
             </thead>
             <tbody>
               {frequencia.map((reg, idx) => (
                 <tr key={idx} className='border-b border-gray-200 hover:bg-[#F5F7FA] transition-colors duration-300'>
-                  <td className='px-6 py-4 text-sm text-gray-900 font-medium'>{reg.data} ({reg.dia})</td>
-                  <td className='px-6 py-4 text-sm text-gray-700'>{reg.entrada}</td>
-                  <td className='px-6 py-4 text-sm text-gray-700'>{reg.saida}</td>
-                  <td className='px-6 py-4 text-sm text-gray-700 font-semibold'>4h05m</td>
-                  <td className='px-6 py-4'>
-                    <span className='px-3 py-1 bg-[#10E686]/20 text-[#10E686] rounded-lg text-xs font-semibold'>
+                  <td className='px-3 md:px-6 py-3 md:py-4 text-xs md:text-sm text-gray-900 font-medium'>{reg.data} ({reg.dia})</td>
+                  <td className='px-3 md:px-6 py-3 md:py-4 text-xs md:text-sm text-gray-700'>{reg.entrada}</td>
+                  <td className='px-3 md:px-6 py-3 md:py-4 text-xs md:text-sm text-gray-700'>{reg.saida}</td>
+                  <td className='px-3 md:px-6 py-3 md:py-4 text-xs md:text-sm text-gray-700 font-semibold'>4h05m</td>
+                  <td className='px-3 md:px-6 py-3 md:py-4'>
+                    <span className='px-2 md:px-3 py-1 bg-[#10E686]/20 text-[#10E686] rounded-lg text-xs font-semibold'>
                       {reg.status}
                     </span>
                   </td>
@@ -148,13 +148,13 @@ export default function Frequencia({ frequencia, estagios }) {
       </div>
 
       {/* Botão de Check-in */}
-      <div className='flex justify-center'>
+      <div className='px-2'>
         <button 
           onClick={() => setModalCheckinAberto(true)}
-          className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-bold py-4 px-8 rounded-xl hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 text-lg flex items-center gap-3'
+          className='w-full bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-bold py-3.5 md:py-4 px-4 md:px-8 rounded-xl hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 text-sm md:text-lg flex items-center justify-center gap-2'
         >
-          <span>📍</span>
-          Fazer Check-in Agora
+          <span className='text-lg md:text-xl'>📍</span>
+          <span>Fazer Check-in Agora</span>
         </button>
       </div>
 
@@ -163,7 +163,7 @@ export default function Frequencia({ frequencia, estagios }) {
         <div className='fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto'>
             {/* Header do Modal */}
-            <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] px-6 py-4 flex items-center justify-between rounded-t-2xl'>
+            <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] px-6 py-4 flex items-center justify-between rounded-t-2xl'>
               <h3 className='text-xl font-bold text-white flex items-center gap-2'>
                 <FiMapPin size={24} />
                 Check-in de Presença
@@ -182,7 +182,7 @@ export default function Frequencia({ frequencia, estagios }) {
             {/* Conteúdo do Modal */}
             <div className='p-6 space-y-6'>
               {/* Data e Hora Atual */}
-              <div className='bg-linear-to-r from-blue-50 to-cyan-50 rounded-xl p-4 border-2 border-blue-200'>
+              <div className='bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-4 border-2 border-blue-200'>
                 <div className='flex items-center gap-3 mb-3'>
                   <FiCalendar className='text-[#237EE6]' size={24} />
                   <p className='text-sm font-semibold text-gray-700'>Data</p>
@@ -295,7 +295,7 @@ export default function Frequencia({ frequencia, estagios }) {
                   disabled={!geolocalizacao}
                   className={`flex-1 font-bold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 ${
                     geolocalizacao
-                      ? 'bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white hover:shadow-xl hover:scale-105'
+                      ? 'bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white hover:shadow-xl hover:scale-105'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
                 >
@@ -309,18 +309,18 @@ export default function Frequencia({ frequencia, estagios }) {
       )}
 
       {/* Histórico de Estágios */}
-      <div className='mt-12'>
-        <h2 className='text-2xl font-bold text-gray-900 mb-6'>📚 Histórico de Estágios</h2>
+      <div className='mt-8 md:mt-12'>
+        <h2 className='text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6'>📚 Histórico de Estágios</h2>
         
         {/* Estágios Concluídos */}
-        <div className='mb-8'>
-          <h3 className='text-xl font-semibold text-[#10E686] mb-4 flex items-center gap-2'>
-            <FiCheckCircle size={24} />
+        <div className='mb-6 md:mb-8'>
+          <h3 className='text-lg md:text-xl font-semibold text-[#10E686] mb-3 md:mb-4 flex items-center gap-2'>
+            <FiCheckCircle size={20} className='md:w-6 md:h-6' />
             Estágios Concluídos ({estagios.concluidos.length})
           </h3>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4'>
             {estagios.concluidos.map((estagio) => (
-              <div key={estagio.id} className='bg-white rounded-xl shadow-md p-5 border-l-4 border-[#10E686] hover:shadow-lg transition-all duration-300'>
+              <div key={estagio.id} className='bg-white rounded-xl shadow-md p-4 md:p-5 border-l-4 border-[#10E686] hover:shadow-lg transition-all duration-300'>
                 <h4 className='text-lg font-bold text-gray-900 mb-2'>{estagio.especialidade}</h4>
                 <p className='text-sm text-gray-600 mb-3'>{estagio.local}</p>
                 <div className='space-y-2'>
@@ -347,14 +347,14 @@ export default function Frequencia({ frequencia, estagios }) {
         </div>
 
         {/* Estágios Em Andamento */}
-        <div className='mb-8'>
-          <h3 className='text-xl font-semibold text-[#237EE6] mb-4 flex items-center gap-2'>
-            <FiTrendingUp size={24} />
+        <div className='mb-6 md:mb-8'>
+          <h3 className='text-lg md:text-xl font-semibold text-[#237EE6] mb-3 md:mb-4 flex items-center gap-2'>
+            <FiTrendingUp size={20} className='md:w-6 md:h-6' />
             Estágios Em Andamento ({estagios.em_andamento.length})
           </h3>
-          <div className='grid grid-cols-1 gap-4'>
+          <div className='grid grid-cols-1 gap-3 md:gap-4'>
             {estagios.em_andamento.map((estagio) => (
-              <div key={estagio.id} className='bg-white rounded-xl shadow-md p-5 border-l-4 border-[#237EE6] hover:shadow-lg transition-all duration-300'>
+              <div key={estagio.id} className='bg-white rounded-xl shadow-md p-4 md:p-5 border-l-4 border-[#237EE6] hover:shadow-lg transition-all duration-300'>
                 <div className='flex flex-col md:flex-row md:items-center md:justify-between mb-4'>
                   <div>
                     <h4 className='text-lg font-bold text-gray-900 mb-1'>{estagio.especialidade}</h4>
@@ -383,7 +383,7 @@ export default function Frequencia({ frequencia, estagios }) {
                       <span className='font-semibold text-gray-900'>{estagio.progresso}%</span>
                     </div>
                     <div className='w-full bg-gray-200 rounded-full h-2'>
-                      <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${estagio.progresso}%` }}></div>
+                      <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full' style={{ width: `${estagio.progresso}%` }}></div>
                     </div>
                   </div>
                 </div>
@@ -394,13 +394,13 @@ export default function Frequencia({ frequencia, estagios }) {
 
         {/* Estágios A Concluir */}
         <div>
-          <h3 className='text-xl font-semibold text-gray-600 mb-4 flex items-center gap-2'>
-            <FiTarget size={24} />
+          <h3 className='text-lg md:text-xl font-semibold text-gray-600 mb-3 md:mb-4 flex items-center gap-2'>
+            <FiTarget size={20} className='md:w-6 md:h-6' />
             Estágios A Concluir ({estagios.a_concluir.length})
           </h3>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4'>
             {estagios.a_concluir.map((estagio) => (
-              <div key={estagio.id} className='bg-white rounded-xl shadow-md p-5 border-l-4 border-gray-300 hover:shadow-lg transition-all duration-300'>
+              <div key={estagio.id} className='bg-white rounded-xl shadow-md p-4 md:p-5 border-l-4 border-gray-300 hover:shadow-lg transition-all duration-300'>
                 <h4 className='text-lg font-bold text-gray-900 mb-2'>{estagio.especialidade}</h4>
                 <p className='text-sm text-gray-600 mb-3'>{estagio.local}</p>
                 <div className='space-y-2'>

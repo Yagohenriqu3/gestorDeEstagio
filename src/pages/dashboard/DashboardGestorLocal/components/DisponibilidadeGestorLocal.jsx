@@ -3,9 +3,9 @@ import { FiPlus } from 'react-icons/fi'
 const DisponibilidadeGestorLocal = ({ disponibilidadesFiltradas }) => {
   return (
     <div className='space-y-6'>
-      <div className='flex justify-between items-center'>
+      <div className='flex flex-col gap-4'>
         <h2 className='text-3xl font-bold text-gray-900 flex items-center gap-2'>📅 Disponibilidade de Preceptores</h2>
-        <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
+        <button className='w-full sm:w-auto bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2'>
           <FiPlus size={18} /> Nova Disponibilidade
         </button>
       </div>
@@ -45,7 +45,7 @@ const DisponibilidadeGestorLocal = ({ disponibilidadesFiltradas }) => {
                     <div className='flex items-center gap-2'>
                       <div className='w-20 bg-gray-200 rounded-full h-2'>
                         <div
-                          className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
+                          className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] h-2 rounded-full'
                           style={{ width: `${(disp.alunos_alocados / disp.capacidade_alunos) * 100}%` }}
                         ></div>
                       </div>

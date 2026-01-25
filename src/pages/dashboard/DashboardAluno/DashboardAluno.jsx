@@ -141,7 +141,7 @@ export default function DashboardAluno() {
   }
 
   return (
-    <div className='flex w-full min-h-screen bg-linear-to-br from-[#F5F7FA] to-white overflow-x-hidden'>
+    <div className='flex w-full min-h-screen bg-gradient-to-br from-[#F5F7FA] to-white overflow-x-hidden'>
       {/* Sidebar Desktop */}
       <Sidebar 
         abaSelecionada={abaSelecionada} 
@@ -153,7 +153,7 @@ export default function DashboardAluno() {
       />
       
       {/* Conteúdo Principal */}
-      <div className={`flex-1 transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
+      <div className={`flex-1 w-full overflow-x-hidden transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
         {/* Header */}
         <HeaderAluno aluno={aluno} />
 
@@ -199,7 +199,7 @@ export default function DashboardAluno() {
         </div>
 
       {/* Conteúdo */}
-      <div className='max-w-7xl mx-auto px-4 md:px-6 lg:px-12 py-6 md:py-10'>
+      <div className='w-full max-w-7xl mx-auto px-4 md:px-6 lg:px-12 py-6 md:py-10'>
         {/* VISÃO GERAL */}
         {abaSelecionada === 'overview' && (
           <VisaoGeral aluno={aluno} vagas={vagas} setAbaSelecionada={setAbaSelecionada} />

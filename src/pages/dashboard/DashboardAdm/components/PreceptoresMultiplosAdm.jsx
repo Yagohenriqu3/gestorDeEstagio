@@ -158,7 +158,7 @@ export default function PreceptoresMultiplosAdm({ preceptores = [], instituicoes
                         setPreceptorSelecionado(prec)
                         setModalAssociarEspecialidade(true)
                       }}
-                      className='bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'
+                      className='bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold px-4 md:px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'
                       title='Associar especialidade'
                     >
                       <FiStar size={16} /> Especialidade
@@ -208,7 +208,7 @@ export default function PreceptoresMultiplosAdm({ preceptores = [], instituicoes
                         Especialidade Associada
                       </h4>
                       {preceptoresComEspecialidade[prec.id] ? (
-                        <div className='bg-linear-to-br from-[#10E686]/10 to-[#60E6D7]/10 rounded-lg p-4 border border-[#10E686]/30'>
+                        <div className='bg-gradient-to-br from-[#10E686]/10 to-[#60E6D7]/10 rounded-lg p-4 border border-[#10E686]/30'>
                           <div className='flex items-center justify-between'>
                             <div>
                               <p className='font-semibold text-gray-900'>{preceptoresComEspecialidade[prec.id]}</p>
@@ -286,10 +286,10 @@ export default function PreceptoresMultiplosAdm({ preceptores = [], instituicoes
 
       {/* Modal Associar Especialidade */}
       {modalAssociarEspecialidade && preceptorSelecionado && (
-        <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50'>
-          <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4'>
+        <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
+          <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full'>
             {/* Header */}
-            <div className='bg-linear-to-r from-[#10E686] to-[#60E6D7] rounded-t-2xl p-6 flex items-center justify-between'>
+            <div className='bg-gradient-to-r from-[#10E686] to-[#60E6D7] rounded-t-2xl p-4 md:p-6 flex items-center justify-between'>
               <div>
                 <h2 className='text-2xl font-bold text-white'>Associar Especialidade</h2>
                 <p className='text-white/80 text-sm mt-1'>{preceptorSelecionado.nome}</p>
@@ -384,7 +384,7 @@ export default function PreceptoresMultiplosAdm({ preceptores = [], instituicoes
                   }
                 }}
                 disabled={!especialidadeSelecionada}
-                className='px-6 py-2 rounded-lg font-semibold text-white bg-linear-to-r from-[#10E686] to-[#60E6D7] hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed'
+                className='px-4 md:px-6 py-2 rounded-lg font-semibold text-white bg-gradient-to-r from-[#10E686] to-[#60E6D7] hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed'
               >
                 Atualizar
               </button>

@@ -1109,7 +1109,7 @@ export default function DashboardAdm() {
   }
 
   return (
-    <div className='flex w-full min-h-screen bg-linear-to-br from-[#F5F7FA] to-white overflow-x-hidden'>
+    <div className='flex w-full min-h-screen bg-gradient-to-br from-[#F5F7FA] to-white overflow-x-hidden'>
       {/* Sidebar Desktop */}
       <Sidebar 
         abaSelecionada={abaSelecionada} 
@@ -1121,11 +1121,11 @@ export default function DashboardAdm() {
       />
       
       {/* Conteúdo Principal */}
-      <div className={`flex-1 transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
+      <div className={`flex-1 w-full overflow-x-hidden transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
         {/* Header */}
-        <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white px-6 lg:px-12 py-10'>
-          <h1 className='text-4xl font-bold'>Dashboard Administrativo</h1>
-          <p className='text-blue-100 mt-2'>Gestão completa de estágios e instituições</p>
+        <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white px-4 md:px-6 lg:px-12 py-6 md:py-10'>
+          <h1 className='text-2xl md:text-3xl lg:text-4xl font-bold'>Dashboard Administrativo</h1>
+          <p className='text-sm md:text-base text-blue-100 mt-2'>Gestão completa de estágios e instituições</p>
         </div>
 
         {/* Tabs Mobile */}
@@ -1164,7 +1164,9 @@ export default function DashboardAdm() {
                 <button onClick={() => { setAbaSelecionada('overview'); setMenuMobileAberto(false) }} className={`w-full text-left px-4 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${abaSelecionada === 'overview' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-700 hover:bg-gray-50'}`}><FiHome size={18} /> Visão Geral</button>
                 <button onClick={() => { setAbaSelecionada('instituicoes'); setMenuMobileAberto(false) }} className={`w-full text-left px-4 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${abaSelecionada === 'instituicoes' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-700 hover:bg-gray-50'}`}><FiBarChart2 size={18} /> Instituições</button>
                 <button onClick={() => { setAbaSelecionada('preceptores'); setMenuMobileAberto(false) }} className={`w-full text-left px-4 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${abaSelecionada === 'preceptores' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-700 hover:bg-gray-50'}`}><FiClipboard size={18} /> Preceptores</button>
-                <button onClick={() => { setAbaSelecionada('semestre'); setMenuMobileAberto(false) }} className={`w-full text-left px-4 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${abaSelecionada === 'semestre' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-700 hover:bg-gray-50'}`}><FiTarget size={18} /> Ofertas</button>
+                
+                <button onClick={() => { setAbaSelecionada('ofertas'); setMenuMobileAberto(false) }} className={`w-full text-left px-4 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${abaSelecionada === 'ofertas' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-700 hover:bg-gray-50'}`}><FiTarget size={18} /> Ofertas</button>
+
                 <button onClick={() => { setAbaSelecionada('alunos'); setMenuMobileAberto(false) }} className={`w-full text-left px-4 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${abaSelecionada === 'alunos' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-700 hover:bg-gray-50'}`}><FiUsers size={18} /> Alunos</button>
                 <button onClick={() => { setAbaSelecionada('curriculos'); setMenuMobileAberto(false) }} className={`w-full text-left px-4 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${abaSelecionada === 'curriculos' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-700 hover:bg-gray-50'}`}><FiClipboard size={18} /> Currículos</button>
                 <button onClick={() => { setAbaSelecionada('componentes'); setMenuMobileAberto(false) }} className={`w-full text-left px-4 py-3 text-sm font-semibold transition-all flex items-center gap-2 ${abaSelecionada === 'componentes' ? 'bg-blue-50 text-[#237EE6] border-l-4 border-[#237EE6]' : 'text-gray-700 hover:bg-gray-50'}`}><FiClipboard size={18} /> Componentes</button>
@@ -1214,9 +1216,9 @@ export default function DashboardAdm() {
             <FiClipboard size={18} /> Preceptores
           </button>
           <button
-            onClick={() => setAbaSelecionada('semestre')}
+            onClick={() => setAbaSelecionada('ofertas')}
                 className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
-              abaSelecionada === 'semestre'
+              abaSelecionada === 'ofertas'
                 ? 'bg-[#237EE6] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
@@ -1388,37 +1390,37 @@ export default function DashboardAdm() {
           {/* ALUNOS (sub-menu) */}
           {abaSelecionada === 'alunos' && (
             <div className='space-y-6'>
-              <div className='overflow-x-auto whitespace-nowrap -mx-2 px-2'>
-                <div className='flex gap-2 md:flex-wrap'>
+              <div>
+                <div className='flex flex-wrap gap-2'>
                 <button
                   onClick={() => setAbaAlunos('nao_alocados')}
-                    className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                    className={`shrink-0 px-2 py-2 md:px-4 md:py-2 text-xs md:text-base rounded-lg font-semibold transition-all flex items-center gap-1 md:gap-2 ${
                     abaAlunos === 'nao_alocados'
                       ? 'bg-[#237EE6] text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  <FiMapPin size={18} /> Não Alocados
+                  <FiMapPin className='text-sm md:text-base' /> <span className='whitespace-nowrap'>Não Alocados</span>
                 </button>
                 <button
                   onClick={() => setAbaAlunos('importacao')}
-                    className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                    className={`shrink-0 px-2 py-2 md:px-4 md:py-2 text-xs md:text-base rounded-lg font-semibold transition-all flex items-center gap-1 md:gap-2 ${
                     abaAlunos === 'importacao'
                       ? 'bg-[#237EE6] text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  <FiUpload size={18} /> Importar Alunos
+                  <FiUpload className='text-sm md:text-base' /> <span className='whitespace-nowrap'>Importar Alunos</span>
                 </button>
                 <button
                   onClick={() => setAbaAlunos('lista')}
-                    className={`shrink-0 px-3 py-2 md:px-4 md:py-2 text-sm md:text-base rounded-lg font-semibold transition-all flex items-center gap-2 ${
+                    className={`shrink-0 px-2 py-2 md:px-4 md:py-2 text-xs md:text-base rounded-lg font-semibold transition-all flex items-center gap-1 md:gap-2 ${
                     abaAlunos === 'lista'
                       ? 'bg-[#237EE6] text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
-                  <FiUsers size={18} /> Lista de Alunos
+                  <FiUsers className='text-sm md:text-base' /> <span className='whitespace-nowrap'>Lista de Alunos</span>
                 </button>
                 </div>
               </div>
@@ -1513,7 +1515,7 @@ export default function DashboardAdm() {
         <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto'>
             {/* Header */}
-            <div className='sticky top-0 bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white p-6 flex items-center justify-between'>
+            <div className='sticky top-0 bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white p-4 md:p-6 flex items-center justify-between'>
               <div>
                 <h2 className='text-2xl font-bold'>Adicionar Preceptor</h2>
                 <p className='text-sm opacity-90 mt-1'>Local: {localSelecionadoParaPreceptor.nome}</p>
@@ -1621,7 +1623,7 @@ export default function DashboardAdm() {
                   }
                 }}
                 disabled={preceptoresSelecionados.length === 0}
-                className='px-6 py-2 bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
+                className='px-4 md:px-6 py-2 bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
               >
                 <FiCheck size={18} /> Adicionar {preceptoresSelecionados.length > 0 ? preceptoresSelecionados.length : ''}
               </button>
@@ -1635,7 +1637,7 @@ export default function DashboardAdm() {
         <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto'>
             {/* Header */}
-            <div className='sticky top-0 bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white p-6 flex items-center justify-between'>
+            <div className='sticky top-0 bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white p-4 md:p-6 flex items-center justify-between'>
               <div>
                 <h2 className='text-2xl font-bold'>Gerenciar Especialidades</h2>
                 <p className='text-sm opacity-90 mt-1'>Local: {localSelecionadoParaEspecialidades.nome}</p>
@@ -1763,7 +1765,7 @@ export default function DashboardAdm() {
                   setLocalSelecionadoParaEspecialidades(null)
                   setEspecialidadesSelecionadas([])
                 }}
-                className='px-6 py-2 bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'
+                className='px-4 md:px-6 py-2 bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'
               >
                 <FiCheck size={18} /> Salvar {especialidadesSelecionadas.length > 0 ? `(${especialidadesSelecionadas.length})` : ''}
               </button>
@@ -1777,7 +1779,7 @@ export default function DashboardAdm() {
         <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-lg w-full'>
             {/* Header */}
-            <div className='bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white p-6 flex items-center justify-between'>
+            <div className='bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white p-4 md:p-6 flex items-center justify-between'>
               <h2 className='text-2xl font-bold'>Nova Especialidade</h2>
               <button
                 onClick={() => {
@@ -1870,7 +1872,7 @@ export default function DashboardAdm() {
                   }
                 }}
                 disabled={!novaEspecialidadeNome || !novaEspecialidadeCodigo}
-                className='px-6 py-2 bg-linear-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
+                className='px-4 md:px-6 py-2 bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
               >
                 <FiCheck size={18} /> Criar Especialidade
               </button>
