@@ -1,6 +1,27 @@
+import { useState } from 'react'
 import { FiBook, FiClock, FiAward, FiPlus } from 'react-icons/fi'
+import NovoComponente from '../../../../components/forms/NovoComponente'
 
-const ComponentesCurricularesAdm = ({ componentes }) => {
+const ComponentesCurricularesAdm = ({ componentes, onSalvarComponente }) => {
+  const [mostrarNovoComponente, setMostrarNovoComponente] = useState(false)
+
+  const handleAbrirForm = () => setMostrarNovoComponente(true)
+  const handleFecharForm = () => setMostrarNovoComponente(false)
+  const handleSalvarComponente = (data) => {
+    if (onSalvarComponente) {
+      onSalvarComponente(data)
+    }
+    setMostrarNovoComponente(false)
+  }
+
+  if (mostrarNovoComponente) {
+    return (
+      <div className='space-y-6'>
+        <NovoComponente onVoltar={handleFecharForm} onSalvar={handleSalvarComponente} />
+      </div>
+    )
+  }
+
   return (
     <div className='space-y-6'>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
@@ -34,7 +55,7 @@ const ComponentesCurricularesAdm = ({ componentes }) => {
 
       <div className='flex justify-between items-center'>
         <h2 className='text-3xl font-bold text-gray-900'>Componentes Curriculares</h2>
-        <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
+        <button onClick={handleAbrirForm} className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
           <FiPlus size={18} /> Novo Componente
         </button>
       </div>

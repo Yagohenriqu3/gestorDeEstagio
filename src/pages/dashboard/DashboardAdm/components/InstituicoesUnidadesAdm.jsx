@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { FiBarChart2, FiPlus, FiEdit2, FiEye, FiDownload, FiX, FiTrash2, FiBook, FiSearch, FiFilter, FiCheck } from 'react-icons/fi'
+import NovoCurso from '../../../../components/forms/NovoCurso'
 import CursosInstituicaoModal from './CursosInstituicaoModal'
+import NovaInstituicao from '../../../../components/forms/NovaInstituicao'
 
 export default function InstituicoesUnidadesAdm({ instituicoes, cursos, abaInstituicoes, setAbaInstituicoes }) {
   const [expandido, setExpandido] = useState(null)
@@ -14,11 +16,14 @@ export default function InstituicoesUnidadesAdm({ instituicoes, cursos, abaInsti
   const [instituicaoSelecionada, setInstituicaoSelecionada] = useState(null)
   const [unidadesParaCurso, setUnidadesParaCurso] = useState([])
   const [instituicaoCursosAberta, setInstituicaoCursosAberta] = useState(null)
+  const [mostrarFormularioInstituicao, setMostrarFormularioInstituicao] = useState(false)
+  const [listaInstituicoes, setListaInstituicoes] = useState(instituicoes)
+  const [mostrarNovoCursoForm, setMostrarNovoCursoForm] = useState(false)
 
   const handleExportar = () => {
     const csv = [
       ['ID', 'Instituição', 'Unidade', 'Cidade', 'Estado', 'Usuários', 'Status'].join(','),
-      ...instituicoes.flatMap(inst =>
+      ...listaInstituicoes.flatMap(inst =>
         inst.unidades.map(un =>
           [inst.id, inst.nome, un.nome, un.cidade, un.estado, un.usuarios, inst.status].join(',')
         )
@@ -138,6 +143,20 @@ export default function InstituicoesUnidadesAdm({ instituicoes, cursos, abaInsti
     fecharModalNovoCurso()
   }
 
+  const handleSalvarInstituicao = (novaInstituicao) => {
+    setListaInstituicoes(prev => [...prev, novaInstituicao])
+    setMostrarFormularioInstituicao(false)
+  }
+
+  const handleVoltarFormulario = () => {
+    setMostrarFormularioInstituicao(false)
+  }
+
+  // Se está mostrando o formulário, renderiza apenas ele
+  if (mostrarFormularioInstituicao) {
+    return <NovaInstituicao onVoltar={handleVoltarFormulario} onSalvar={handleSalvarInstituicao} />
+  }
+
   return (
     <div className='space-y-6'>
       <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
@@ -149,18 +168,21 @@ export default function InstituicoesUnidadesAdm({ instituicoes, cursos, abaInsti
           >
             <FiDownload size={18} /> Exportar
           </button>
-          <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'>
+          <button 
+            onClick={() => setMostrarFormularioInstituicao(true)}
+            className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'
+          >
             <FiPlus size={18} /> Nova Instituição
           </button>
         </div>
       </div>
 
       <div className='space-y-4'>
-          {instituicoes.map((inst) => (
+          {listaInstituicoes.map((inst) => (
             <div key={inst.id_instituicao} className='bg-white rounded-2xl shadow-md overflow-hidden'>
               {/* Cabeçalho da Instituição */}
               <div 
-                className='p-6 bg-linear-to-r from-[#237EE6]/10 to-[#60C9E6]/10 cursor-pointer hover:from-[#237EE6]/20 hover:to-[#60C9E6]/20 transition-all'
+                className='p-6 bg-gradient-to-r from-[#237EE6]/10 to-[#60C9E6]/10 cursor-pointer hover:from-[#237EE6]/20 hover:to-[#60C9E6]/20 transition-all'
                 onClick={() => setExpandido(expandido === inst.id_instituicao ? null : inst.id_instituicao)}
               >
                 <div className='flex items-center justify-between'>
@@ -248,7 +270,7 @@ export default function InstituicoesUnidadesAdm({ instituicoes, cursos, abaInsti
       {modalAberto && dadosSelecionados && (
         <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto'>
-            <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white p-6 flex items-center justify-between'>
+            <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white p-6 flex items-center justify-between'>
               <h2 className='text-2xl font-bold'>
                 {dadosSelecionados.tipo === 'instituicao' 
                   ? `Dados da Instituição: ${dadosSelecionados.dados.nome_instituicao}`
@@ -470,7 +492,7 @@ export default function InstituicoesUnidadesAdm({ instituicoes, cursos, abaInsti
                 >
                   Fechar
                 </button>
-                <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'>
+                <button className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'>
                   <FiEdit2 size={16} /> Editar
                 </button>
               </div>
@@ -483,7 +505,7 @@ export default function InstituicoesUnidadesAdm({ instituicoes, cursos, abaInsti
       {modalCursosAberto && unidadeSelecionada && (
         <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto'>
-            <div className='bg-linear-to-r from-[#60C9E6] to-[#237EE6] text-white p-6 flex items-center justify-between sticky top-0 z-10'>
+            <div className='bg-gradient-to-r from-[#60C9E6] to-[#237EE6] text-white p-6 flex items-center justify-between sticky top-0 z-10'>
               <h2 className='text-2xl font-bold flex items-center gap-2'>
                 <FiBook size={24} /> Cursos - {unidadeSelecionada.nome_unidade}
               </h2>
@@ -623,7 +645,7 @@ export default function InstituicoesUnidadesAdm({ instituicoes, cursos, abaInsti
                 </button>
                 <button
                   onClick={handleAdicionarCurso}
-                  className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'
+                  className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'
                 >
                   <FiPlus size={16} /> Adicionar Curso
                 </button>
@@ -647,7 +669,7 @@ export default function InstituicoesUnidadesAdm({ instituicoes, cursos, abaInsti
       {modalNovosCursos && instituicaoSelecionada && (
         <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'>
           <div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full'>
-            <div className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white p-6 flex items-center justify-between'>
+            <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white p-6 flex items-center justify-between'>
               <h2 className='text-2xl font-bold flex items-center gap-2'>
                 <FiPlus size={24} /> Criar Novo Curso
               </h2>
@@ -660,68 +682,83 @@ export default function InstituicoesUnidadesAdm({ instituicoes, cursos, abaInsti
             </div>
 
             <div className='p-8'>
-              <div className='mb-8'>
-                <h3 className='text-lg font-bold text-gray-900 mb-4'>
-                  Selecione as unidades que oferecerão este curso:
-                </h3>
-                <p className='text-sm text-gray-600 mb-4'>
-                  Instituição: <strong>{instituicaoSelecionada.nome_instituicao}</strong>
-                </p>
-              </div>
-
-              <div className='space-y-3 mb-8'>
-                {instituicaoSelecionada.unidades.map((unidade) => (
-                  <div
-                    key={unidade.id_unidade}
-                    onClick={() => toggleUnidadeParaCurso(unidade.id_unidade)}
-                    className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                      unidadesParaCurso.includes(unidade.id_unidade)
-                        ? 'border-[#237EE6] bg-[#237EE6]/10'
-                        : 'border-gray-200 bg-white hover:border-gray-300'
-                    }`}
-                  >
-                    <div className='flex items-center gap-3'>
-                      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                        unidadesParaCurso.includes(unidade.id_unidade)
-                          ? 'bg-[#237EE6] border-[#237EE6]'
-                          : 'border-gray-300'
-                      }`}>
-                        {unidadesParaCurso.includes(unidade.id_unidade) && (
-                          <FiCheck size={16} className='text-white' />
-                        )}
-                      </div>
-                      <div className='flex-1'>
-                        <p className='font-semibold text-gray-900'>{unidade.nome_unidade}</p>
-                        <p className='text-sm text-gray-600'>{unidade.cidade}, {unidade.uf}</p>
-                      </div>
-                    </div>
+              {mostrarNovoCursoForm ? (
+                <NovoCurso
+                  initialValues={{ id_unidade: unidadesParaCurso[0] ?? instituicaoSelecionada.unidades[0]?.id_unidade ?? '' }}
+                  onVoltar={() => setMostrarNovoCursoForm(false)}
+                  onSalvar={(curso) => {
+                    setMostrarNovoCursoForm(false)
+                    if (typeof handleCriarCurso === 'function') {
+                      handleCriarCurso(curso)
+                    }
+                  }}
+                />
+              ) : (
+                <>
+                  <div className='mb-8'>
+                    <h3 className='text-lg font-bold text-gray-900 mb-4'>
+                      Selecione as unidades que oferecerão este curso:
+                    </h3>
+                    <p className='text-sm text-gray-600 mb-4'>
+                      Instituição: <strong>{instituicaoSelecionada.nome_instituicao}</strong>
+                    </p>
                   </div>
-                ))}
-              </div>
 
-              {unidadesParaCurso.length > 0 && (
-                <div className='bg-blue-100 border-2 border-[#237EE6] p-4 rounded-lg mb-8'>
-                  <p className='text-sm font-semibold text-[#237EE6]'>
-                    {unidadesParaCurso.length} unidade(s) selecionada(s)
-                  </p>
-                </div>
+                  <div className='space-y-3 mb-8'>
+                    {instituicaoSelecionada.unidades.map((unidade) => (
+                      <div
+                        key={unidade.id_unidade}
+                        onClick={() => toggleUnidadeParaCurso(unidade.id_unidade)}
+                        className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                          unidadesParaCurso.includes(unidade.id_unidade)
+                            ? 'border-[#237EE6] bg-[#237EE6]/10'
+                            : 'border-gray-200 bg-white hover:border-gray-300'
+                        }`}
+                      >
+                        <div className='flex items-center gap-3'>
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                            unidadesParaCurso.includes(unidade.id_unidade)
+                              ? 'bg-[#237EE6] border-[#237EE6]'
+                              : 'border-gray-300'
+                          }`}>
+                            {unidadesParaCurso.includes(unidade.id_unidade) && (
+                              <FiCheck size={16} className='text-white' />
+                            )}
+                          </div>
+                          <div className='flex-1'>
+                            <p className='font-semibold text-gray-900'>{unidade.nome_unidade}</p>
+                            <p className='text-sm text-gray-600'>{unidade.cidade}, {unidade.uf}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {unidadesParaCurso.length > 0 && (
+                    <div className='bg-blue-100 border-2 border-[#237EE6] p-4 rounded-lg mb-8'>
+                      <p className='text-sm font-semibold text-[#237EE6]'>
+                        {unidadesParaCurso.length} unidade(s) selecionada(s)
+                      </p>
+                    </div>
+                  )}
+
+                  <div className='border-t-2 border-gray-200 pt-6 flex gap-3 justify-end'>
+                    <button
+                      onClick={fecharModalNovoCurso}
+                      className='bg-gray-200 text-gray-800 font-semibold px-6 py-2 rounded-lg hover:bg-gray-300 transition-all'
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      onClick={() => setMostrarNovoCursoForm(true)}
+                      disabled={unidadesParaCurso.length === 0}
+                      className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
+                    >
+                      <FiPlus size={16} /> Criar Curso
+                    </button>
+                  </div>
+                </>
               )}
-
-              <div className='border-t-2 border-gray-200 pt-6 flex gap-3 justify-end'>
-                <button
-                  onClick={fecharModalNovoCurso}
-                  className='bg-gray-200 text-gray-800 font-semibold px-6 py-2 rounded-lg hover:bg-gray-300 transition-all'
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleCriarCurso}
-                  disabled={unidadesParaCurso.length === 0}
-                  className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2'
-                >
-                  <FiPlus size={16} /> Criar Curso
-                </button>
-              </div>
             </div>
           </div>
         </div>

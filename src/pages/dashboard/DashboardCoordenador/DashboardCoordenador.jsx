@@ -15,6 +15,7 @@ import MatriculasCoordenador from './components/MatriculasCoordenador'
 import ComponentesCoordenador from './components/ComponentesCoordenador'
 import FrequenciaDetalhadaCoordenador from './components/FrequenciaDetalhadaCoordenador'
 import AvaliacoesCoordenador from './components/AvaliacoesCoordenador'
+import PerfilCoordenador from './components/PerfilCoordenador'
 
 export default function DashboardCoordenador() {
   const [abaSelecionada, setAbaSelecionada] = useState('overview')
@@ -70,6 +71,24 @@ export default function DashboardCoordenador() {
     vagas_ocupadas: 28,
     locais_ativos: 8,
     frequencia_media: 94.3
+  }
+
+  // Mock do coordenador logado
+  const coordenador = {
+    nome: 'Prof. Dr. Carlos Eduardo Santos',
+    cpf: '123.456.789-00',
+    rg: '12.345.678-9',
+    data_nascimento: '1980-05-15',
+    email: 'carlos.santos@unifesp.br',
+    telefone: '(11) 3091-9000',
+    celular: '(11) 98765-4321',
+    cep: '04023-062',
+    endereco: 'Av. Lineu Prestes, 2565 - Cidade Universitária',
+    cidade: 'São Paulo - SP',
+    instituicao: 'Universidade Federal de São Paulo',
+    unidade: 'Campus São Paulo',
+    cargo: 'Coordenador(a) de Estágios',
+    data_admissao: '2015-03-10'
   }
 
   // Mock de alunos
@@ -644,7 +663,11 @@ export default function DashboardCoordenador() {
       {/* Conteúdo Principal */}
       <div className={`flex-1 w-full overflow-x-hidden transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
         {/* Header */}
-        <HeaderCoordenador instituicao={instituicao} />
+        <HeaderCoordenador 
+          instituicao={instituicao} 
+          coordenador={coordenador}
+          onPerfilClick={() => setAbaSelecionada('perfil')}
+        />
 
         {/* Menu Mobile */}
         <div className='lg:hidden bg-white border-b border-gray-200 px-4 py-3'>
@@ -689,6 +712,11 @@ export default function DashboardCoordenador() {
 
       {/* Conteúdo */}
       <div className='max-w-7xl mx-auto px-4 md:px-6 lg:px-12 py-6 md:py-10'>
+        {/* PERFIL DO COORDENADOR */}
+        {abaSelecionada === 'perfil' && (
+          <PerfilCoordenador coordenador={coordenador} />
+        )}
+
         {/* VISÃO GERAL */}
         {abaSelecionada === 'overview' && (
           <VisaoGeralCoordenador instituicao={instituicao} alunos={alunos} />
@@ -1985,7 +2013,7 @@ export default function DashboardCoordenador() {
                       )}
                     </div>
                   )}
-              )
+              
         </div>
       </div>
     </div>

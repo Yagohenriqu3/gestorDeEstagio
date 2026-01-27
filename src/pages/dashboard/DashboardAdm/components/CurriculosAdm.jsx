@@ -1,11 +1,32 @@
+import { useState } from 'react'
 import { FiPlus } from 'react-icons/fi'
+import NovoCurriculo from '../../../../components/forms/NovoCurriculo'
 
-const CurriculosAdm = ({ curriculos, cursos }) => {
+const CurriculosAdm = ({ curriculos, cursos, onSalvarCurriculo }) => {
+  const [mostrarNovoCurriculo, setMostrarNovoCurriculo] = useState(false)
+
+  const handleAbrirForm = () => setMostrarNovoCurriculo(true)
+  const handleFecharForm = () => setMostrarNovoCurriculo(false)
+  const handleSalvarCurriculo = (data) => {
+    if (onSalvarCurriculo) {
+      onSalvarCurriculo(data)
+    }
+    setMostrarNovoCurriculo(false)
+  }
+
+  if (mostrarNovoCurriculo) {
+    return (
+      <div className='space-y-6'>
+        <NovoCurriculo onVoltar={handleFecharForm} onSalvar={handleSalvarCurriculo} />
+      </div>
+    )
+  }
+
   return (
     <div className='space-y-6'>
       <div className='flex justify-between items-center'>
         <h2 className='text-3xl font-bold text-gray-900'>Currículos de Estágio</h2>
-        <button className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
+        <button onClick={handleAbrirForm} className='bg-linear-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
           <FiPlus size={18} /> Novo Currículo
         </button>
       </div>

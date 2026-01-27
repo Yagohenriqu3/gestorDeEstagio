@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { FiTrendingUp, FiDownload, FiPlus, FiCheckCircle, FiCalendar, FiUsers, FiClock, FiAlertTriangle, FiMapPin, FiFilter } from 'react-icons/fi'
+import NovoSemestre from '../../../../components/forms/NovoSemestre'
 
 export default function SemestreOfertasAdm({ ofertas = [] }) {
   const [semestreSelecionado, setSemestreSelecionado] = useState('todos')
+  const [mostrarFormulario, setMostrarFormulario] = useState(false)
+  const [listaSemestres, setListaSemestres] = useState(ofertas)
 
   // Extrair semestres únicos das ofertas
-  const semestresDisponiveis = [...new Set(ofertas.map(o => `${o.ano_letivo}.${o.semestre}`))].sort().reverse()
+  const semestresDisponiveis = [...new Set(listaSemestres.map(o => `${o.ano_letivo}.${o.semestre}`))].sort().reverse()
 
   // Filtrar ofertas pelo semestre selecionado
   const ofertasFiltradas = semestreSelecionado === 'todos'
-    ? ofertas
-    : ofertas.filter(o => `${o.ano_letivo}.${o.semestre}` === semestreSelecionado)
+    ? listaSemestres
+    : listaSemestres.filter(o => `${o.ano_letivo}.${o.semestre}` === semestreSelecionado)
 
   const resumoHorasExigidas = ofertasFiltradas.reduce((total, o) => total + (o.horas_praticas_exigidas || 0), 0)
   const resumoHorasOfertadas = ofertasFiltradas.reduce((total, o) => total + (o.horas_praticas_ofertadas || 0), 0)
@@ -76,6 +79,20 @@ export default function SemestreOfertasAdm({ ofertas = [] }) {
     return Math.min(100, Math.round((part / whole) * 100))
   }
 
+  const handleSalvarSemestre = (novoSemestre) => {
+    setListaSemestres(prev => [...prev, novoSemestre])
+    setMostrarFormulario(false)
+  }
+
+  const handleVoltar = () => {
+    setMostrarFormulario(false)
+  }
+
+  // Se está mostrando o formulário, renderiza apenas ele
+  if (mostrarFormulario) {
+    return <NovoSemestre onVoltar={handleVoltar} onSalvar={handleSalvarSemestre} />
+  }
+
   return (
     <div className='space-y-6'>
       <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
@@ -87,7 +104,10 @@ export default function SemestreOfertasAdm({ ofertas = [] }) {
           >
             <FiDownload size={18} /> Exportar
           </button>
-          <button className='bg-white border-2 border-[#10E686] text-[#10E686] font-semibold px-6 py-2 rounded-lg hover:bg-[#F5F7FA] transition-all flex items-center gap-2'>
+          <button 
+            onClick={() => setMostrarFormulario(true)}
+            className='bg-white border-2 border-[#10E686] text-[#10E686] font-semibold px-6 py-2 rounded-lg hover:bg-[#F5F7FA] transition-all flex items-center gap-2'
+          >
             <FiPlus size={18} /> Novo Semestre
           </button>
           <button className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white font-semibold px-6 py-2 rounded-lg hover:shadow-lg transition-all flex items-center gap-2'>

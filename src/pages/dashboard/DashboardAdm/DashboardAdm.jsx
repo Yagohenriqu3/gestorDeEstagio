@@ -4,7 +4,7 @@ import { MdLocalHospital } from 'react-icons/md'
 
 import Sidebar from '../../../components/layout/Sidebar/Sidebar'
 import { menuAdministrador } from '../../../config/dashboardMenus'
-import VicaoGeralAdm from './components/VicaoGeralAdm'
+import VicaoGeralAdm from './components/VisaoGeralAdm'
 import InstituicoesUnidadesAdm from './components/InstituicoesUnidadesAdm'
 import ImportacaoCSVAdm from './components/ImportacaoCSVAdm'
 import PreceptoresMultiplosAdm from './components/PreceptoresMultiplosAdm'
