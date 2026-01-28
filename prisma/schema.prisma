@@ -1,0 +1,845 @@
+// Prisma schema for Gestão de Estágio Sistema
+// Database: MySQL 8.0.44
+// Updated: 2026-01-28
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+//////////////////////
+// ENUMS
+//////////////////////
+
+enum TipoUsuario {
+  Aluno
+  Preceptor
+  Coordenador
+  Docente
+  DPO
+  Administrador
+
+  @@map("tipo_usuario")
+}
+
+enum StatusUsuario {
+  Ativo
+  Inativo
+  Bloqueado
+
+  @@map("status_usuario")
+}
+
+enum TipoInstituicao {
+  Publica
+  Privada
+
+  @@map("tipo_instituicao")
+}
+
+enum StatusInstituicao {
+  Ativa
+  Inativa
+
+  @@map("status_instituicao")
+}
+
+enum TipoUnidade {
+  Campus
+  Polo
+  Extensao
+  Sede
+
+  @@map("tipo_unidade")
+}
+
+enum StatusUnidade {
+  Ativa
+  Inativa
+
+  @@map("status_unidade")
+}
+
+enum GrauCurso {
+  Bacharelado
+  Licenciatura
+  Tecnologo
+
+  @@map("grau_curso")
+}
+
+enum ModalidadeCurso {
+  Presencial
+  EAD
+  Hibrido
+
+  @@map("modalidade_curso")
+}
+
+enum StatusCurso {
+  Ativo
+  Inativo
+  Implantacao
+
+  @@map("status_curso")
+}
+
+enum StatusCurriculo {
+  Ativo
+  Inativo
+  Descontinuado
+
+  @@map("status_curriculo")
+}
+
+enum TipoComponente {
+  Obrigatorio
+  Optativo
+
+  @@map("tipo_componente")
+}
+
+enum StatusComponente {
+  Ativo
+  Inativo
+
+  @@map("status_componente")
+}
+
+enum SituacaoAcademica {
+  Regular
+  Trancado
+  Formado
+
+  @@map("situacao_academica")
+}
+
+enum TipoLocal {
+  Hospital
+  UBS
+  Clinica
+  Outro
+
+  @@map("tipo_local")
+}
+
+enum TipoGestao {
+  SUS
+  Privado
+  Misto
+
+  @@map("tipo_gestao")
+}
+
+enum StatusLocal {
+  Ativo
+  Inativo
+  Suspenso
+
+  @@map("status_local")
+}
+
+enum NivelAcesso {
+  Leitura
+  Escrita
+  Admin
+
+  @@map("nivel_acesso")
+}
+
+enum StatusPerfil {
+  Ativo
+  Inativo
+
+  @@map("status_perfil")
+}
+
+enum TipoVinculoPreceptor {
+  Bolsista
+  PJ
+  CLT
+
+  @@map("tipo_vinculo")
+}
+
+enum StatusPreceptor {
+  Ativo
+  Inativo
+  Afastado
+
+  @@map("status_preceptor")
+}
+
+enum DiaSemana {
+  Segunda
+  Terca
+  Quarta
+  Quinta
+  Sexta
+  Sabado
+  Domingo
+
+  @@map("dia_semana")
+}
+
+enum StatusDisponibilidade {
+  Ativa
+  Inativa
+  Suspensa
+
+  @@map("status_disponibilidade")
+}
+
+enum SituacaoMatricula {
+  Matriculado
+  Cursando
+  Concluido
+  Cancelado
+
+  @@map("situacao_matricula")
+}
+
+enum StatusMatricula {
+  Ativo
+  Inativo
+
+  @@map("status_matricula")
+}
+
+enum StatusAvaliacao {
+  Pendente
+  Realizada
+
+  @@map("status_avaliacao")
+}
+
+enum StatusJustificativa {
+  Pendente
+  Aprovada
+  Reprovada
+
+  @@map("status_justificativa")
+}
+
+enum TipoRegistro {
+  CheckIn
+  CheckOut
+
+  @@map("tipo_registro")
+}
+
+enum MetodoRegistro {
+  Facial
+  Manual
+  QRCode
+
+  @@map("metodo_registro")
+}
+
+enum StatusValidacao {
+  Pendente
+  Validada
+  Rejeitada
+
+  @@map("status_validacao")
+}
+
+enum StatusReposicao {
+  Agendada
+  Realizada
+  Cancelada
+
+  @@map("status_reposicao")
+}
+
+enum StatusRodizio {
+  Ativo
+  Inativo
+  Cancelado
+
+  @@map("status_rodizio")
+}
+
+enum StatusOfertaComponente {
+  Planejado
+  Andamento
+  Concluido
+
+  @@map("status_oferta_componente")
+}
+
+enum StatusTurma {
+  Planejada
+  Aberta
+  Fechada
+
+  @@map("status_turma")
+}
+
+enum StatusOfertaSemestre {
+  Planejamento
+  Aberto
+  Andamento
+  Encerrado
+
+  @@map("status_oferta_semestre")
+}
+
+//////////////////////
+// MODELS
+//////////////////////
+
+model Usuario {
+  idUsuario       Int             @id @default(autoincrement()) @map("id_usuario")
+  nomeCompleto    String?         @map("nome_completo")
+  cpf             String?
+  email           String?         @unique
+  senhaHash       String?         @map("senha_hash")
+  telefoneCelular String?         @map("telefone_celular")
+  dataNascimento  DateTime?       @map("data_nascimento") @db.Date
+  fotoPerfil      String?         @map("foto_perfil")
+  tipoUsuario     TipoUsuario?    @map("tipo_usuario")
+  primeiroAcesso  Boolean?        @map("primeiro_acesso")
+  ultimoAcesso    DateTime?       @map("ultimo_acesso")
+  status          StatusUsuario?
+  dataCadastro    DateTime?       @default(now()) @map("data_cadastro")
+
+  aluno               Aluno?
+  preceptor           Preceptor?
+  licencas            LicencaAluno[]
+
+  @@map("usuario")
+}
+
+model InstituicaoEnsino {
+  idInstituicao  Int                 @id @default(autoincrement()) @map("id_instituicao")
+  nomeInstituicao String             @map("nome_instituicao")
+  cnpj           String?
+  tipoInstituicao TipoInstituicao?   @map("tipo_instituicao")
+  mantenedora    String?
+  codigoMec      String?             @map("codigo_mec")
+  site           String?
+  telefone       String?
+  emailContato   String?             @map("email_contato")
+  status         StatusInstituicao?  @default(Ativa)
+  dataCadastro   DateTime?           @default(now()) @map("data_cadastro")
+  logo           String?
+
+  unidades Unidade[]
+
+  @@map("instituicao_ensino")
+}
+
+model Unidade {
+  idUnidade       Int           @id @default(autoincrement()) @map("id_unidade")
+  instituicaoId   Int           @map("id_instituicao")
+  nomeUnidade     String?       @map("nome_unidade")
+  sigla           String?
+  cnpjUnidade     String?       @map("cnpj_unidade")
+  tipoUnidade     TipoUnidade?  @map("tipo_unidade")
+  enderecoCompleto String?      @map("endereco_completo") @db.Text
+  cidade          String?
+  uf              String?       @db.Char(2)
+  cep             String?
+  telefone        String?
+  emailContato    String?       @map("email_contato")
+  status          StatusUnidade? @default(Ativa)
+  dataCadastro    DateTime?     @default(now()) @map("data_cadastro")
+
+  instituicao    InstituicaoEnsino @relation(fields: [instituicaoId], references: [idInstituicao])
+  alunos         Aluno[]
+  preceptores    Preceptor[]
+  cursos         Curso[]
+  locaisEstagio  LocalEstagio[]
+  ofertasSemestre OfertaSemestre[]
+
+  @@map("unidade")
+}
+
+model Curso {
+  idCurso         Int         @id @default(autoincrement()) @map("id_curso")
+  unidadeId       Int         @map("id_unidade")
+  nomeCurso       String?     @map("nome_curso")
+  grau            GrauCurso?
+  modalidade      ModalidadeCurso?
+  duracao_semestres Int?      @map("duracao_semestres")
+  cargaHoraria    Int?        @map("carga_horaria_total")
+  codigoMec       String?     @map("codigo_mec")
+  descricao       String?     @db.Text
+  status          StatusCurso? @map("status")
+  dataCadastro    DateTime?   @default(now()) @map("data_cadastro")
+
+  unidade             Unidade @relation(fields: [unidadeId], references: [idUnidade])
+  curriculosEstagio   CurriculoEstagio[]
+
+  @@map("curso")
+}
+
+model CurriculoEstagio {
+  idCurriculo           Int               @id @default(autoincrement()) @map("id_curriculo")
+  cursoId               Int               @map("id_curso")
+  nomeCurriculo         String?           @map("nome_curriculo")
+  descricao             String?           @db.Text
+  versao                String?
+  anoVigencia           Int?              @map("ano_vigencia")
+  cargaHorariaTotalEstagio Int?          @map("carga_horaria_total_estagio")
+  periodosInicio        Int?              @map("periodos_inicio")
+  periodosFim           Int?              @map("periodos_fim")
+  status                StatusCurriculo?
+  dataCadastro          DateTime?         @default(now()) @map("data_cadastro")
+
+  curso              Curso @relation(fields: [cursoId], references: [idCurso])
+  componentes        ComponenteCurricular[]
+  ofertasSemestre    OfertaSemestre[]
+
+  @@map("curriculo_estagio")
+}
+
+model ComponenteCurricular {
+  idComponente        Int               @id @default(autoincrement()) @map("id_componente")
+  curriculoId         Int               @map("id_curriculo")
+  codigoComponente    String?           @map("codigo_componente")
+  nomeComponente      String?           @map("nome_componente")
+  descricao           String?           @db.Text
+  tipoComponente      TipoComponente?   @map("tipo_componente")
+  areaConhecimento    String?           @map("area_conhecimento")
+  periodoSugerido     Int?              @map("periodo_sugerido")
+  cargaHorariaTotalComponent Int?       @map("carga_horaria_total")
+  cargaHorariaPratica Int?              @map("carga_horaria_pratica")
+  cargaHorariaTeorica Int?              @map("carga_horaria_teorica")
+  duracaoSemanas      Int?              @map("duracao_semanas")
+  chSemanalEsperada   Int?              @map("ch_semanal_esperada")
+  preRequisitos       Json?             @map("pre_requisitos")
+  competenciasDcn     Json?             @map("competencias_dcn")
+  obrigatorioSus      Boolean?          @map("obrigatorio_sus")
+  status              StatusComponente?
+  dataCadastro        DateTime?         @default(now()) @map("data_cadastro")
+
+  curriculo               CurriculoEstagio @relation(fields: [curriculoId], references: [idCurriculo])
+  disponibilidades       DisponibilidadePreceptor[]
+  ofertasComponenteRodizio OfertaComponenteRodizio[]
+
+  @@map("componente_curricular")
+}
+
+model Aluno {
+  idAluno         Int                 @id @default(autoincrement()) @map("id_aluno")
+  usuarioId       Int                 @map("id_usuario") @unique
+  unidadeId       Int                 @map("id_unidade")
+  matricula       String?             @map("matricula_institucional")
+  periodoAtual    Int?                @map("periodo_atual")
+  situacao        SituacaoAcademica?  @map("situacao_academica")
+  hashBiometrico  String?             @map("hash_biometrico")
+  dataCadastro    DateTime?           @default(now()) @map("data_cadastro")
+
+  usuario                    Usuario @relation(fields: [usuarioId], references: [idUsuario])
+  unidade                    Unidade @relation(fields: [unidadeId], references: [idUnidade])
+  matriculas                 MatriculaTurma[]
+  avaliacoes                 AvaliacaoAluno[]
+  avaliacoesAtitudinais      AvaliacaoAtitudinal[]
+  controleJornadas           ControleJornadaSemanal[]
+  frequencias                RegistroFrequencia[]
+  registrosVacina            RegistroVacinaAluno[]
+  justificativasFalta        JustificativaFalta[]
+  licencas                   LicencaAluno[]
+  reposicoes                 ReposicaoAula[]
+
+  @@map("aluno")
+}
+
+model Preceptor {
+  idPreceptor         Int                   @id @default(autoincrement()) @map("id_preceptor")
+  usuarioId           Int                   @map("id_usuario") @unique
+  unidadeId           Int                   @map("id_unidade")
+  especialidadePrincipal String?            @map("especialidade_principal")
+  registroProfissional String?              @map("registro_profissional")
+  tipoVinculo         TipoVinculoPreceptor? @map("tipo_vinculo")
+  valorHora           Decimal?              @map("valor_hora")
+  status              StatusPreceptor?
+  dataCadastro        DateTime?             @default(now()) @map("data_cadastro")
+
+  usuario              Usuario @relation(fields: [usuarioId], references: [idUsuario])
+  unidade              Unidade @relation(fields: [unidadeId], references: [idUnidade])
+  disponibilidades     DisponibilidadePreceptor[]
+  avaliacoesAtitudinais AvaliacaoAtitudinal[]
+
+  @@map("preceptor")
+}
+
+model LocalEstagio {
+  idLocal             Int       @id @default(autoincrement()) @map("id_local")
+  unidadeId           Int       @map("id_unidade")
+  nomeLocal           String?   @map("nome_local")
+  tipoLocal           TipoLocal? @map("tipo_local")
+  tipoGestao          TipoGestao? @map("tipo_gestao")
+  cnpj                String?
+  enderecoCompleto    String?   @map("endereco_completo") @db.Text
+  cidade              String?
+  uf                  String?   @db.Char(2)
+  cep                 String?
+  telefone            String?
+  emailContato        String?   @map("email_contato")
+  latitude            Decimal?  @map("latitude") @db.Decimal(10,8)
+  longitude           Decimal?  @map("longitude") @db.Decimal(11,8)
+  raioToleranciaMetros Int?     @map("raio_tolerancia_metros")
+  capacidadeAlunos    Int?      @map("capacidade_alunos")
+  status              StatusLocal?
+  dataCadastro        DateTime? @default(now()) @map("data_cadastro")
+
+  unidade              Unidade @relation(fields: [unidadeId], references: [idUnidade])
+  disponibilidades     DisponibilidadePreceptor[]
+  frequencias          RegistroFrequencia[]
+
+  @@map("local_estagio")
+}
+
+model DisponibilidadePreceptor {
+  idDisponibilidade     Int                @id @default(autoincrement()) @map("id_disponibilidade")
+  preceptorId           Int                @map("id_preceptor")
+  localId               Int                @map("id_local")
+  componenteId          Int                @map("id_componente")
+  diaSemana             DiaSemana?         @map("dia_semana")
+  horarioInicio         DateTime?          @map("horario_inicio") @db.Time
+  horarioFim            DateTime?          @map("horario_fim") @db.Time
+  cargaHorariaoDia      Decimal?           @map("carga_horaria_dia")
+  numeroVagas           Int?               @map("numero_vagas")
+  vagasOcupadas         Int?               @map("vagas_ocupadas")
+  dataInicioVigencia    DateTime?          @map("data_inicio_vigencia") @db.Date
+  dataFimVigencia       DateTime?          @map("data_fim_vigencia") @db.Date
+  status                StatusDisponibilidade?
+  observacoes           String?            @db.Text
+  dataCadastro          DateTime?          @default(now()) @map("data_cadastro")
+
+  preceptor    Preceptor @relation(fields: [preceptorId], references: [idPreceptor])
+  local        LocalEstagio @relation(fields: [localId], references: [idLocal])
+  componente   ComponenteCurricular @relation(fields: [componenteId], references: [idComponente])
+  turmas       Turma[]
+
+  @@map("disponibilidade_preceptor")
+}
+
+model OfertaSemestre {
+  idOfertaSemestre   Int                 @id @default(autoincrement()) @map("id_oferta_semestre")
+  curriculoId        Int                 @map("id_curriculo")
+  unidadeId          Int                 @map("id_unidade")
+  anoLetivo          Int?                @map("ano_letivo")
+  semestre           Int?
+  descricao          String?
+  dataInicio         DateTime?           @map("data_inicio") @db.Date
+  dataFim            DateTime?           @map("data_fim") @db.Date
+  totalAlunosPrev    Int?                @map("total_alunos_previstos")
+  status             StatusOfertaSemestre?
+  observacoes        String?             @db.Text
+  dataCadastro       DateTime?           @default(now()) @map("data_cadastro")
+
+  curriculo CurriculoEstagio @relation(fields: [curriculoId], references: [idCurriculo])
+  unidade   Unidade @relation(fields: [unidadeId], references: [idUnidade])
+  rodizios  Rodizio[]
+
+  @@map("oferta_semestre")
+}
+
+model Rodizio {
+  idRodizio        Int                @id @default(autoincrement()) @map("id_rodizio")
+  ofertaSemestreId Int                @map("id_oferta_semestre")
+  nomeRodizio      String?            @map("nome_rodizio")
+  codigoRodizio    String?            @map("codigo_rodizio")
+  vagasTotal       Int?               @map("vagas_total")
+  vagasOcupadas    Int?               @map("vagas_ocupadas")
+  ordemExecucao    Int?               @map("ordem_execucao")
+  corIdentificacao String?            @map("cor_identificacao")
+  status           StatusRodizio?
+  observacoes      String?            @db.Text
+  dataCadastro     DateTime?          @default(now()) @map("data_cadastro")
+
+  ofertaSemestre      OfertaSemestre @relation(fields: [ofertaSemestreId], references: [idOfertaSemestre])
+  ofertasComponente   OfertaComponenteRodizio[]
+
+  @@map("rodizio")
+}
+
+model OfertaComponenteRodizio {
+  idOfertaComponente Int                    @id @default(autoincrement()) @map("id_oferta_componente")
+  rodizioId          Int                    @map("id_rodizio")
+  componenteId       Int                    @map("id_componente")
+  ordemNoRodizio     Int?                   @map("ordem_no_rodizio")
+  dataInicioComponente DateTime?            @map("data_inicio_componente") @db.Date
+  dataFimComponente   DateTime?             @map("data_fim_componente") @db.Date
+  cargaHorariaSemanal Int?                  @map("carga_horaria_semanal")
+  numeroSemanas      Int?                   @map("numero_semanas")
+  vagasDisponiveis   Int?                   @map("vagas_disponiveis")
+  status             StatusOfertaComponente?
+  observacoes        String?                @db.Text
+  dataCadastro       DateTime?              @default(now()) @map("data_cadastro")
+
+  rodizio    Rodizio @relation(fields: [rodizioId], references: [idRodizio])
+  componente ComponenteCurricular @relation(fields: [componenteId], references: [idComponente])
+  turmas     Turma[]
+
+  @@map("oferta_componente_rodizio")
+}
+
+model Turma {
+  idTurma                Int          @id @default(autoincrement()) @map("id_turma")
+  ofertaComponenteId     Int          @map("id_oferta_componente")
+  disponibilidadeId      Int          @map("id_disponibilidade")
+  codigoTurma            String?      @map("codigo_turma")
+  nomeTurma              String?      @map("nome_turma")
+  vagasTotal             Int?         @map("vagas_total")
+  vagasOcupadas          Int?         @map("vagas_ocupadas")
+  status                 StatusTurma?
+  observacoes            String?      @db.Text
+  dataCadastro           DateTime?    @default(now()) @map("data_cadastro")
+
+  ofertaComponente   OfertaComponenteRodizio @relation(fields: [ofertaComponenteId], references: [idOfertaComponente])
+  disponibilidade    DisponibilidadePreceptor @relation(fields: [disponibilidadeId], references: [idDisponibilidade])
+  matriculas         MatriculaTurma[]
+
+  @@map("turma")
+}
+
+model MatriculaTurma {
+  idMatricula        Int              @id @default(autoincrement()) @map("id_matricula")
+  alunoId            Int              @map("id_aluno")
+  turmaId            Int              @map("id_turma")
+  dataMatricula      DateTime?        @map("data_matricula") @db.Date
+  situacao           SituacaoMatricula?
+  dataInicio         DateTime?        @map("data_inicio") @db.Date
+  dataFim            DateTime?        @map("data_fim") @db.Date
+  frequenciaPercentual Decimal?       @map("frequencia_percentual")
+  totalFaltas        Int?             @map("total_faltas")
+  totalPresencas     Int?             @map("total_presencas")
+  status             StatusMatricula?
+  dataCadastro       DateTime?        @default(now()) @map("data_cadastro")
+
+  aluno        Aluno @relation(fields: [alunoId], references: [idAluno])
+  turma        Turma @relation(fields: [turmaId], references: [idTurma])
+  avaliacoes   AvaliacaoAluno[]
+  avaliacoeAtitudinais AvaliacaoAtitudinal[]
+  controleJornadas ControleJornadaSemanal[]
+  frequencias  RegistroFrequencia[]
+  justificativas JustificativaFalta[]
+  reposicoes   ReposicaoAula[]
+
+  @@map("matricula_turma")
+}
+
+model AvaliacaoAluno {
+  idAvaliacao    Int           @id @default(autoincrement()) @map("id_avaliacao")
+  alunoId        Int           @map("id_aluno")
+  matriculaId    Int           @map("id_matricula")
+  nota           Decimal?      @map("nota")
+  situacao       StatusAvaliacao?
+  dataRealizacao DateTime?     @map("data_realizacao") @db.Date
+  dataCadastro   DateTime?     @default(now()) @map("data_cadastro")
+
+  aluno     Aluno @relation(fields: [alunoId], references: [idAluno])
+  matricula MatriculaTurma @relation(fields: [matriculaId], references: [idMatricula])
+
+  @@map("avaliacao_aluno")
+}
+
+model CriterioAtitudinal {
+  idCriterio   Int       @id @default(autoincrement()) @map("id_criterio")
+  nomeCriterio String?   @map("nome_criterio")
+  peso         Decimal?
+  ativo        Boolean?
+  dataCadastro DateTime? @default(now()) @map("data_cadastro")
+
+  avaliacoes AvaliacaoAtitudinal[]
+
+  @@map("criterio_atitudinal")
+}
+
+model AvaliacaoAtitudinal {
+  idAvaliacaoAtitudinal Int        @id @default(autoincrement()) @map("id_avaliacao_atitudinal")
+  alunoId               Int?       @map("id_aluno")
+  matriculaId           Int?       @map("id_matricula")
+  criterioId            Int?       @map("id_criterio")
+  preceptorId           Int?       @map("id_preceptor")
+  nota                  Decimal?
+  dataCadastro          DateTime?  @default(now()) @map("data_cadastro")
+
+  aluno      Aluno? @relation(fields: [alunoId], references: [idAluno])
+  matricula  MatriculaTurma? @relation(fields: [matriculaId], references: [idMatricula])
+  criterio   CriterioAtitudinal? @relation(fields: [criterioId], references: [idCriterio])
+  preceptor  Preceptor? @relation(fields: [preceptorId], references: [idPreceptor])
+
+  @@map("avaliacao_atitudinal")
+}
+
+model ControleJornadaSemanal {
+  idControleJornada    Int        @id @default(autoincrement()) @map("id_controle_jornada")
+  alunoId              Int        @map("id_aluno")
+  matriculaId          Int        @map("id_matricula")
+  anoSemana            String?    @map("ano_semana")
+  dataInicioSemana     DateTime?  @map("data_inicio_semana") @db.Date
+  dataFimSemana        DateTime?  @map("data_fim_semana") @db.Date
+  totalHorasRegistradas Decimal?  @map("total_horas_registradas")
+  totalHorasValidadas  Decimal?   @map("total_horas_validadas")
+  dentroLimite40h      Boolean?   @map("dentro_limite_40h")
+  observacoes          String?    @db.Text
+  dataCalculo          DateTime?  @map("data_calculo")
+  dataCadastro         DateTime?  @default(now()) @map("data_cadastro")
+
+  aluno    Aluno @relation(fields: [alunoId], references: [idAluno])
+  matricula MatriculaTurma @relation(fields: [matriculaId], references: [idMatricula])
+
+  @@map("controle_jornada_semanal")
+}
+
+model RegistroFrequencia {
+  idRegistro           Int              @id @default(autoincrement()) @map("id_registro")
+  matriculaId          Int              @map("id_matricula")
+  alunoId              Int              @map("id_aluno")
+  localId              Int              @map("id_local")
+  dataRegistro         DateTime?        @map("data_registro") @db.Date
+  tipoRegistro         TipoRegistro?    @map("tipo_registro")
+  horaRegistro         DateTime?        @map("hora_registro") @db.Time
+  latitudeRegistro     Decimal?         @map("latitude_registro") @db.Decimal(10,8)
+  longitudeRegistro    Decimal?         @map("longitude_registro") @db.Decimal(11,8)
+  distanciaMetros      Int?             @map("distancia_metros")
+  dentroRaioTolerancia Boolean?         @map("dentro_raio_tolerancia")
+  metodoRegistro       MetodoRegistro?  @map("metodo_registro")
+  statusValidacao      StatusValidacao? @map("status_validacao")
+  dataCadastro         DateTime?        @default(now()) @map("data_cadastro")
+
+  matricula MatriculaTurma @relation(fields: [matriculaId], references: [idMatricula])
+  aluno     Aluno @relation(fields: [alunoId], references: [idAluno])
+  local     LocalEstagio @relation(fields: [localId], references: [idLocal])
+
+  @@map("registro_frequencia")
+}
+
+model VacinaObrigatoria {
+  idVacina         Int       @id @default(autoincrement()) @map("id_vacina")
+  nomeVacina       String?   @map("nome_vacina")
+  dosesNecessarias Int?      @map("doses_necessarias")
+  validadeAnos     Int?      @map("validade_anos")
+  ativa            Boolean?
+  dataCadastro     DateTime? @default(now()) @map("data_cadastro")
+
+  registrosVacina RegistroVacinaAluno[]
+
+  @@map("vacina_obrigatoria")
+}
+
+model RegistroVacinaAluno {
+  idRegistroVacina Int              @id @default(autoincrement()) @map("id_registro_vacina")
+  alunoId          Int              @map("id_aluno")
+  vacinaId         Int              @map("id_vacina")
+  doseNumero       Int?             @map("dose_numero")
+  dataAplicacao    DateTime?        @map("data_aplicacao") @db.Date
+  statusValidacao  StatusValidacao? @map("status_validacao")
+  dataCadastro     DateTime?        @default(now()) @map("data_cadastro")
+
+  aluno  Aluno @relation(fields: [alunoId], references: [idAluno])
+  vacina VacinaObrigatoria @relation(fields: [vacinaId], references: [idVacina])
+
+  @@map("registro_vacina_aluno")
+}
+
+model JustificativaFalta {
+  idJustificativa Int              @id @default(autoincrement()) @map("id_justificativa")
+  alunoId         Int              @map("id_aluno")
+  matriculaId     Int              @map("id_matricula")
+  dataFalta       DateTime?        @map("data_falta") @db.Date
+  tipoJustificativa String?        @map("tipo_justificativa")
+  descricao       String?          @db.Text
+  statusAnalise   StatusJustificativa? @map("status_analise")
+  dataEnvio       DateTime?        @map("data_envio")
+  dataCadastro    DateTime?        @default(now()) @map("data_cadastro")
+
+  aluno       Aluno @relation(fields: [alunoId], references: [idAluno])
+  matricula   MatriculaTurma @relation(fields: [matriculaId], references: [idMatricula])
+  reposicoes  ReposicaoAula[]
+
+  @@map("justificativa_falta")
+}
+
+model ReposicaoAula {
+  idReposicao      Int             @id @default(autoincrement()) @map("id_reposicao")
+  justificativaId  Int             @map("id_justificativa")
+  alunoId          Int             @map("id_aluno")
+  matriculaId      Int             @map("id_matricula")
+  dataReposicao    DateTime?       @map("data_reposicao") @db.Date
+  horarioInicio    DateTime?       @map("horario_inicio") @db.Time
+  horarioFim       DateTime?       @map("horario_fim") @db.Time
+  cargaHoraria     Decimal?        @map("carga_horaria")
+  status           StatusReposicao?
+  dataCadastro     DateTime?       @default(now()) @map("data_cadastro")
+
+  justificativa JustificativaFalta @relation(fields: [justificativaId], references: [idJustificativa])
+  aluno         Aluno @relation(fields: [alunoId], references: [idAluno])
+  matricula     MatriculaTurma @relation(fields: [matriculaId], references: [idMatricula])
+
+  @@map("reposicao_aula")
+}
+
+model LicencaAluno {
+  idLicenca    Int              @id @default(autoincrement()) @map("id_licenca")
+  alunoId      Int              @map("id_aluno")
+  usuarioId    Int              @map("id_usuario")
+  tipoLicenca  String?          @map("tipo_licenca")
+  dataInicio   DateTime?        @map("data_inicio") @db.Date
+  dataFim      DateTime?        @map("data_fim") @db.Date
+  motivo       String?          @db.Text
+  status       StatusJustificativa?
+  dataCadastro DateTime?        @default(now()) @map("data_cadastro")
+
+  aluno   Aluno @relation(fields: [alunoId], references: [idAluno])
+  usuario Usuario @relation(fields: [usuarioId], references: [idUsuario])
+
+  @@map("licenca_aluno")
+}
+
+model PerfilAcesso {
+  idPerfil              Int       @id @default(autoincrement()) @map("id_perfil")
+  nomePerfil            String?   @map("nome_perfil")
+  nivelAcesso           NivelAcesso?
+  status                StatusPerfil?
+  dataCadastro          DateTime? @default(now()) @map("data_cadastro")
+
+  funcionalidades PerfilFuncionalidade[]
+
+  @@map("perfil_acesso")
+}
+
+model Funcionalidade {
+  idFuncionalidade Int       @id @default(autoincrement()) @map("id_funcionalidade")
+  nomeFuncionalidade String? @map("nome_funcionalidade")
+  modulo           String?
+  ativaSistema     Boolean?  @map("ativa_sistema")
+  dataCadastro     DateTime? @default(now()) @map("data_cadastro")
+
+  perfis PerfilFuncionalidade[]
+
+  @@map("funcionalidade")
+}
+
+model PerfilFuncionalidade {
+  idPerfilFuncionalidade Int @id @default(autoincrement()) @map("id_perfil_funcionalidade")
+  perfilId               Int? @map("id_perfil")
+  funcionalidadeId       Int? @map("id_funcionalidade")
+  dataCadastro           DateTime? @default(now()) @map("data_cadastro")
+
+  perfil         PerfilAcesso? @relation(fields: [perfilId], references: [idPerfil])
+  funcionalidade Funcionalidade? @relation(fields: [funcionalidadeId], references: [idFuncionalidade])
+
+  @@map("perfil_funcionalidade")
+}
+
+model Notificacao {
+  idNotificacao Int       @id @default(autoincrement()) @map("id_notificacao")
+  idDestinatario Int?     @map("id_destinatario")
+  titulo        String?
+  mensagem      String?   @db.Text
+  lida          Boolean?
+  dataCadastro  DateTime? @default(now()) @map("data_cadastro")
+
+  @@map("notificacao")
+}
