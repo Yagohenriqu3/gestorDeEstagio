@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { FiHome, FiUsers, FiMapPin, FiClipboard, FiBarChart2, FiSettings, FiPlus, FiUpload, FiMenu, FiX, FiTarget, FiCalendar, FiBook, FiClock, FiAward, FiStar, FiCheck, FiTrash2, FiEdit2, FiEye } from 'react-icons/fi'
+import { FiHome, FiUsers, FiMapPin, FiClipboard, FiBarChart2, FiSettings, FiPlus, FiUpload, FiMenu, FiX, FiTarget, FiCalendar, FiBook, FiClock, FiAward, FiStar, FiCheck, FiTrash2, FiEdit2, FiEye, FiLogOut } from 'react-icons/fi'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../../hooks/useAuth'
 import { MdLocalHospital } from 'react-icons/md'
 
 import Sidebar from '../../../components/layout/Sidebar/Sidebar'
@@ -23,6 +25,20 @@ import VacinasAdm from './components/VacinasAdm'
 import UsuariosAdm from './components/UsuariosAdm'
 
 export default function DashboardAdm() {
+  const navigate = useNavigate()
+  const { logout } = useAuth()
+  const [mostrarModalSair, setMostrarModalSair] = useState(false)
+  
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
+
+  const confirmarLogout = () => {
+    setMostrarModalSair(false)
+    handleLogout()
+  }
+
   const [abaSelecionada, setAbaSelecionada] = useState('overview')
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
   const [menuMobileAberto, setMenuMobileAberto] = useState(false)
@@ -1123,9 +1139,19 @@ export default function DashboardAdm() {
       {/* Conteúdo Principal */}
       <div className={`flex-1 w-full overflow-x-hidden transition-all duration-300 ml-0 ${sidebarExpanded ? 'lg:ml-64' : 'lg:ml-20'}`}>
         {/* Header */}
-        <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white px-4 md:px-6 lg:px-12 py-6 md:py-10'>
-          <h1 className='text-2xl md:text-3xl lg:text-4xl font-bold'>Dashboard Administrativo</h1>
-          <p className='text-sm md:text-base text-blue-100 mt-2'>Gestão completa de estágios e instituições</p>
+        <div className='bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white px-4 md:px-6 lg:px-12 py-6 md:py-10 flex items-center justify-between'>
+          <div>
+            <h1 className='text-2xl md:text-3xl lg:text-4xl font-bold'>Dashboard Administrativo</h1>
+            <p className='text-sm md:text-base text-blue-100 mt-2'>Gestão completa de estágios e instituições</p>
+          </div>
+          <button
+            onClick={() => setMostrarModalSair(true)}
+            className='bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-lg font-semibold flex items-center gap-2 transition-colors duration-200'
+            title='Sair da conta'
+          >
+            <FiLogOut size={20} />
+            <span className='hidden sm:inline'>Sair</span>
+          </button>
         </div>
 
         {/* Tabs Mobile */}
@@ -1881,6 +1907,30 @@ export default function DashboardAdm() {
         </div>
       )}
       </div>
+
+      {/* Modal de Confirmação de Logout */}
+      {mostrarModalSair && (
+        <div className='fixed inset-0 bg-black/50 flex items-center justify-center z-50'>
+          <div className='bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4'>
+            <h3 className='text-xl font-bold text-gray-900 mb-2'>Tem certeza?</h3>
+            <p className='text-gray-600 mb-6'>Você realmente deseja sair da aplicação?</p>
+            <div className='flex gap-3 justify-end'>
+              <button
+                onClick={() => setMostrarModalSair(false)}
+                className='px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-900 rounded-lg font-semibold transition-colors'
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmarLogout}
+                className='px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-colors'
+              >
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

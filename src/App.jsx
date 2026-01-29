@@ -1,14 +1,16 @@
 import './App.css'
+import { AuthProvider } from './contexts/AuthContext'
 import Header from './components/layout/Header/Header'
 import AppRoutes from './routes/AppRoutes'
-function App() {
- 
 
+function App() {
   return (
-    <div className='bg-[#F5F7FA]'>
-      <Header/>
-      <AppRoutes/>
-    </div>
+    <AuthProvider>
+      <div className='bg-[#F5F7FA]'>
+        <Header/>
+        <AppRoutes/>
+      </div>
+    </AuthProvider>
   )
 }
 

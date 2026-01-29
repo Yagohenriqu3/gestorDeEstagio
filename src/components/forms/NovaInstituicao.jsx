@@ -1,22 +1,27 @@
 import { useState } from 'react'
-import { FiSave, FiX, FiAlertCircle, FiGlobe, FiMail, FiPhone, FiMapPin, FiUpload, FiImage } from 'react-icons/fi'
+import { FiSave, FiX, FiAlertCircle, FiGlobe, FiMail, FiPhone, FiMapPin, FiUpload, FiImage, FiLoader } from 'react-icons/fi'
+import { useAuth } from '../../hooks/useAuth'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 export default function NovaInstituicao({ onVoltar, onSalvar }) {
+  const { usuario, token } = useAuth()
   const [formData, setFormData] = useState({
-    nome_instituicao: '',
+    nomeInstituicao: '',
     cnpj: '',
-    tipo_instituicao: 'Pública',
+    tipoInstituicao: 'Pública',
     mantenedora: '',
-    codigo_mec: '',
+    codigoMec: '',
     site: '',
     telefone: '',
-    email_contato: '',
+    emailContato: '',
     status: 'Ativa',
-    logo: null
   })
 
   const [erros, setErros] = useState({})
-  const [previewLogo, setPreviewLogo] = useState(null)
+  const [carregando, setCarregando] = useState(false)
+  const [mensagemErro, setMensagemErro] = useState('')
+  const [mensagemSucesso, setMensagemSucesso] = useState('')
 
   // Máscaras
   const aplicarMascaraCNPJ = (valor) => {
@@ -108,50 +113,25 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
     if (erros[name]) {
       setErros(prev => ({ ...prev, [name]: '' }))
     }
+    
+    // Limpar mensagens
+    if (mensagemErro) setMensagemErro('')
+    if (mensagemSucesso) setMensagemSucesso('')
   }
 
   const handleLogoChange = (e) => {
-    const file = e.target.files[0]
-    
-    if (file) {
-      // Validar tipo de arquivo
-      if (!file.type.startsWith('image/')) {
-        setErros(prev => ({ ...prev, logo: 'Apenas imagens são permitidas' }))
-        return
-      }
-
-      // Validar tamanho (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        setErros(prev => ({ ...prev, logo: 'A imagem deve ter no máximo 5MB' }))
-        return
-      }
-
-      setFormData(prev => ({ ...prev, logo: file }))
-      
-      // Criar preview
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewLogo(reader.result)
-      }
-      reader.readAsDataURL(file)
-
-      // Limpar erro
-      if (erros.logo) {
-        setErros(prev => ({ ...prev, logo: '' }))
-      }
-    }
+    // Logo removido por enquanto
   }
 
   const removerLogo = () => {
-    setFormData(prev => ({ ...prev, logo: null }))
-    setPreviewLogo(null)
+    // Logo removido por enquanto
   }
 
   const validarFormulario = () => {
     const novosErros = {}
 
-    if (!formData.nome_instituicao || formData.nome_instituicao.trim().length < 3) {
-      novosErros.nome_instituicao = 'Nome da instituição deve ter no mínimo 3 caracteres'
+    if (!formData.nomeInstituicao || formData.nomeInstituicao.trim().length < 3) {
+      novosErros.nomeInstituicao = 'Nome da instituição deve ter no mínimo 3 caracteres'
     }
 
     if (!formData.cnpj) {
@@ -160,16 +140,16 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
       novosErros.cnpj = 'CNPJ inválido'
     }
 
-    if (!formData.tipo_instituicao) {
-      novosErros.tipo_instituicao = 'Selecione o tipo de instituição'
+    if (!formData.tipoInstituicao) {
+      novosErros.tipoInstituicao = 'Selecione o tipo de instituição'
     }
 
     if (!formData.mantenedora || formData.mantenedora.trim().length < 3) {
       novosErros.mantenedora = 'Nome da mantenedora deve ter no mínimo 3 caracteres'
     }
 
-    if (!formData.codigo_mec || formData.codigo_mec.trim().length < 1) {
-      novosErros.codigo_mec = 'Código e-MEC é obrigatório'
+    if (!formData.codigoMec || formData.codigoMec.trim().length < 1) {
+      novosErros.codigoMec = 'Código e-MEC é obrigatório'
     }
 
     if (formData.site && !validarURL(formData.site)) {
@@ -182,10 +162,10 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
       novosErros.telefone = 'Telefone inválido'
     }
 
-    if (!formData.email_contato) {
-      novosErros.email_contato = 'E-mail é obrigatório'
-    } else if (!validarEmail(formData.email_contato)) {
-      novosErros.email_contato = 'E-mail inválido'
+    if (!formData.emailContato) {
+      novosErros.emailContato = 'E-mail é obrigatório'
+    } else if (!validarEmail(formData.emailContato)) {
+      novosErros.emailContato = 'E-mail inválido'
     }
 
     if (!formData.status) {
@@ -196,28 +176,87 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
     return Object.keys(novosErros).length === 0
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     
-    if (validarFormulario()) {
-      // Preparar dados para salvar
-      const novaInstituicao = {
-        ...formData,
-        id_instituicao: Date.now(), // Mock ID
-        data_cadastro: new Date().toISOString(),
-        cnpj: formData.cnpj.replace(/\D/g, ''), // Remover formatação para salvar
-        telefone: formData.telefone.replace(/\D/g, '') // Remover formatação para salvar
+    if (!validarFormulario()) {
+      setMensagemErro('Por favor, corrija os erros no formulário')
+      return
+    }
+
+    // Verificar se usuário é administrador
+    if (usuario?.tipoUsuario !== 'Administrador') {
+      setMensagemErro('Apenas administradores podem criar instituições')
+      return
+    }
+
+    setCarregando(true)
+    setMensagemErro('')
+    setMensagemSucesso('')
+
+    try {
+      const response = await fetch(`${API_URL}/instituicoes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          nomeInstituicao: formData.nomeInstituicao,
+          cnpj: formData.cnpj,
+          tipoInstituicao: formData.tipoInstituicao,
+          mantenedora: formData.mantenedora,
+          codigoMec: formData.codigoMec,
+          site: formData.site,
+          telefone: formData.telefone,
+          emailContato: formData.emailContato,
+          status: formData.status,
+        }),
+      })
+
+      const dados = await response.json()
+
+      if (!response.ok) {
+        if (dados.erros) {
+          setErros(dados.erros)
+          setMensagemErro('Por favor, corrija os erros no formulário')
+        } else {
+          setMensagemErro(dados.erro || 'Erro ao criar instituição')
+        }
+        return
       }
 
+      setMensagemSucesso(dados.mensagem)
+      
       if (onSalvar) {
-        onSalvar(novaInstituicao)
+        onSalvar(dados.dados)
       }
-      
-      alert('Instituição cadastrada com sucesso!')
-      
-      if (onVoltar) {
-        onVoltar()
-      }
+
+      // Limpar formulário
+      setFormData({
+        nomeInstituicao: '',
+        cnpj: '',
+        tipoInstituicao: 'Pública',
+        mantenedora: '',
+        codigoMec: '',
+        site: '',
+        telefone: '',
+        emailContato: '',
+        status: 'Ativa',
+      })
+      setErros({})
+
+      // Voltar após 2 segundos
+      setTimeout(() => {
+        if (onVoltar) {
+          onVoltar()
+        }
+      }, 2000)
+    } catch (erro) {
+      console.error('Erro:', erro)
+      setMensagemErro('Erro de conexão com o servidor. Tente novamente.')
+    } finally {
+      setCarregando(false)
     }
   }
 
@@ -240,12 +279,34 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
         <button
           onClick={handleCancelar}
           className='text-gray-500 hover:text-gray-700 transition-colors'
+          disabled={carregando}
         >
           <FiX size={28} />
         </button>
       </div>
 
-      {/* Formulário */}
+      {/* Mensagem de Erro */}
+      {mensagemErro && (
+        <div className='bg-red-50 border border-red-200 rounded-xl p-4 flex gap-3'>
+          <FiAlertCircle className='text-red-600 shrink-0 mt-0.5' size={20} />
+          <div>
+            <p className='font-semibold text-red-900'>{mensagemErro}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Mensagem de Sucesso */}
+      {mensagemSucesso && (
+        <div className='bg-green-50 border border-green-200 rounded-xl p-4 flex gap-3'>
+          <div className='w-5 h-5 rounded-full bg-green-600 flex items-center justify-center text-white text-sm shrink-0 mt-0.5'>
+            ✓
+          </div>
+          <div>
+            <p className='font-semibold text-green-900'>{mensagemSucesso}</p>
+            <p className='text-sm text-green-800'>Redirecionando...</p>
+          </div>
+        </div>
+      )}
       <form onSubmit={handleSubmit} className='bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-6'>
         {/* Informações Básicas */}
         <div>
@@ -260,15 +321,16 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
               </label>
               <input
                 type='text'
-                name='nome_instituicao'
-                value={formData.nome_instituicao}
+                name='nomeInstituicao'
+                value={formData.nomeInstituicao}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border ${erros.nome_instituicao ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
+                className={`w-full px-4 py-2 border ${erros.nomeInstituicao ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
                 placeholder='Ex: Universidade Federal de São Paulo'
+                disabled={carregando}
               />
-              {erros.nome_instituicao && (
+              {erros.nomeInstituicao && (
                 <p className='text-red-500 text-xs mt-1 flex items-center gap-1'>
-                  <FiAlertCircle size={12} /> {erros.nome_instituicao}
+                  <FiAlertCircle size={12} /> {erros.nomeInstituicao}
                 </p>
               )}
             </div>
@@ -286,6 +348,7 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
                 className={`w-full px-4 py-2 border ${erros.cnpj ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
                 placeholder='00.000.000/0000-00'
                 maxLength='18'
+                disabled={carregando}
               />
               {erros.cnpj && (
                 <p className='text-red-500 text-xs mt-1 flex items-center gap-1'>
@@ -301,15 +364,16 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
               </label>
               <input
                 type='text'
-                name='codigo_mec'
-                value={formData.codigo_mec}
+                name='codigoMec'
+                value={formData.codigoMec}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border ${erros.codigo_mec ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
+                className={`w-full px-4 py-2 border ${erros.codigoMec ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
                 placeholder='Ex: 1234'
+                disabled={carregando}
               />
-              {erros.codigo_mec && (
+              {erros.codigoMec && (
                 <p className='text-red-500 text-xs mt-1 flex items-center gap-1'>
-                  <FiAlertCircle size={12} /> {erros.codigo_mec}
+                  <FiAlertCircle size={12} /> {erros.codigoMec}
                 </p>
               )}
             </div>
@@ -320,17 +384,18 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
                 Tipo de Instituição <span className='text-red-500'>*</span>
               </label>
               <select
-                name='tipo_instituicao'
-                value={formData.tipo_instituicao}
+                name='tipoInstituicao'
+                value={formData.tipoInstituicao}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border ${erros.tipo_instituicao ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
+                className={`w-full px-4 py-2 border ${erros.tipoInstituicao ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
+                disabled={carregando}
               >
                 <option value='Pública'>Pública</option>
                 <option value='Privada'>Privada</option>
               </select>
-              {erros.tipo_instituicao && (
+              {erros.tipoInstituicao && (
                 <p className='text-red-500 text-xs mt-1 flex items-center gap-1'>
-                  <FiAlertCircle size={12} /> {erros.tipo_instituicao}
+                  <FiAlertCircle size={12} /> {erros.tipoInstituicao}
                 </p>
               )}
             </div>
@@ -347,6 +412,7 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
                 onChange={handleChange}
                 className={`w-full px-4 py-2 border ${erros.mantenedora ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
                 placeholder='Ex: Governo Federal'
+                disabled={carregando}
               />
               {erros.mantenedora && (
                 <p className='text-red-500 text-xs mt-1 flex items-center gap-1'>
@@ -365,6 +431,7 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
                 value={formData.status}
                 onChange={handleChange}
                 className={`w-full px-4 py-2 border ${erros.status ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
+                disabled={carregando}
               >
                 <option value='Ativa'>Ativa</option>
                 <option value='Inativa'>Inativa</option>
@@ -397,6 +464,7 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
                 className={`w-full px-4 py-2 border ${erros.telefone ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
                 placeholder='(00) 0000-0000'
                 maxLength='15'
+                disabled={carregando}
               />
               {erros.telefone && (
                 <p className='text-red-500 text-xs mt-1 flex items-center gap-1'>
@@ -412,15 +480,16 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
               </label>
               <input
                 type='email'
-                name='email_contato'
-                value={formData.email_contato}
+                name='emailContato'
+                value={formData.emailContato}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border ${erros.email_contato ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
+                className={`w-full px-4 py-2 border ${erros.emailContato ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
                 placeholder='contato@instituicao.edu.br'
+                disabled={carregando}
               />
-              {erros.email_contato && (
+              {erros.emailContato && (
                 <p className='text-red-500 text-xs mt-1 flex items-center gap-1'>
-                  <FiAlertCircle size={12} /> {erros.email_contato}
+                  <FiAlertCircle size={12} /> {erros.emailContato}
                 </p>
               )}
             </div>
@@ -437,6 +506,7 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
                 onChange={handleChange}
                 className={`w-full px-4 py-2 border ${erros.site ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-[#237EE6] focus:border-transparent outline-none`}
                 placeholder='https://www.instituicao.edu.br'
+                disabled={carregando}
               />
               {erros.site && (
                 <p className='text-red-500 text-xs mt-1 flex items-center gap-1'>
@@ -453,54 +523,10 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
           <h3 className='text-lg font-bold text-gray-900 mb-4 flex items-center gap-2'>
             <FiImage size={20} /> Logo da Instituição
           </h3>
-          <div className='space-y-4'>
-            {/* Upload */}
-            <div>
-              <label className='block text-sm font-semibold text-gray-700 mb-2'>
-                Enviar Logo (opcional)
-              </label>
-              <div className='flex items-center gap-4'>
-                <label className='cursor-pointer bg-gradient-to-r from-[#237EE6] to-[#60C9E6] text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2'>
-                  <FiUpload size={18} />
-                  Selecionar Imagem
-                  <input
-                    type='file'
-                    accept='image/*'
-                    onChange={handleLogoChange}
-                    className='hidden'
-                  />
-                </label>
-                {formData.logo && (
-                  <button
-                    type='button'
-                    onClick={removerLogo}
-                    className='text-red-500 hover:text-red-700 font-semibold transition-colors flex items-center gap-1'
-                  >
-                    <FiX size={18} /> Remover
-                  </button>
-                )}
-              </div>
-              {erros.logo && (
-                <p className='text-red-500 text-xs mt-1 flex items-center gap-1'>
-                  <FiAlertCircle size={12} /> {erros.logo}
-                </p>
-              )}
-              <p className='text-xs text-gray-500 mt-1'>Formatos aceitos: JPG, PNG, SVG. Tamanho máximo: 5MB</p>
-            </div>
-
-            {/* Preview */}
-            {previewLogo && (
-              <div className='bg-gray-50 rounded-xl p-4 border-2 border-gray-200'>
-                <p className='text-sm font-semibold text-gray-700 mb-3'>Preview da Logo:</p>
-                <div className='flex items-center justify-center'>
-                  <img
-                    src={previewLogo}
-                    alt='Preview'
-                    className='max-h-40 rounded-lg shadow-md'
-                  />
-                </div>
-              </div>
-            )}
+          <div className='bg-yellow-50 border border-yellow-200 rounded-xl p-4'>
+            <p className='text-sm text-yellow-800'>
+              ℹ️ Upload de logo será implementado em breve. Por enquanto, você pode adicionar a logo após criar a instituição.
+            </p>
           </div>
         </div>
 
@@ -526,15 +552,25 @@ export default function NovaInstituicao({ onVoltar, onSalvar }) {
           <button
             type='button'
             onClick={handleCancelar}
-            className='flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all duration-300 flex items-center justify-center gap-2'
+            className='flex-1 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
+            disabled={carregando}
           >
             <FiX size={18} /> Cancelar
           </button>
           <button
             type='submit'
-            className='flex-1 px-6 py-3 bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-gray-900 font-semibold rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2'
+            className='flex-1 px-6 py-3 bg-gradient-to-r from-[#10E686] to-[#60E6D7] text-gray-900 font-semibold rounded-lg hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
+            disabled={carregando}
           >
-            <FiSave size={18} /> Cadastrar Instituição
+            {carregando ? (
+              <>
+                <FiLoader size={18} className='animate-spin' /> Cadastrando...
+              </>
+            ) : (
+              <>
+                <FiSave size={18} /> Cadastrar Instituição
+              </>
+            )}
           </button>
         </div>
       </form>
